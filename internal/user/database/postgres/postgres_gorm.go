@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type pg struct {
+type Pg struct {
 	*gorm.DB
 }
 
@@ -20,7 +20,7 @@ func (c Config) dsn() string {
 		c.Host, c.Port, c.Name, c.User, c.Password, c.SslMode)
 }
 
-func NewWithGorm(cfg config.DbNode) (*pg, error) {
+func NewWithGorm(cfg config.DbNode) (*Pg, error) {
 	conf := Config(cfg)
 
 	db, err := gorm.Open(postgres.New(postgres.Config{
@@ -33,10 +33,10 @@ func NewWithGorm(cfg config.DbNode) (*pg, error) {
 
 	db.AutoMigrate(&entity.User{})
 
-	return &pg{db}, nil
+	return &Pg{db}, nil
 }
 
-func (pg *pg) Close() error {
+func (pg *Pg) Close() error {
 	db, err := pg.DB.DB()
 	if err != nil {
 		return fmt.Errorf("failed to retrieve DB: %w", err)
