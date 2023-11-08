@@ -1,0 +1,14 @@
+type: google.api.Service
+config_version: 3
+
+http:
+  rules:
+    - selector: userservice.UserService.GetUserByEmail
+      post: "/grpc/v1/getUserByEmail"
+      body: "*"
+    - selector: userservice.UserService.CreateUser
+      post: "/grpc/v1/createUser"
+      body: "*"
+    - selector: userservice.UserService.DeleteUserById
+      post: "/grpc/v1/deleteUserById"
+      body: "*"

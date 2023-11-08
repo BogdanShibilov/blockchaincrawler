@@ -5,6 +5,8 @@ import (
 	"blockchaincrawler/internal/user/repository"
 	"context"
 	"fmt"
+
+	"github.com/google/uuid"
 )
 
 type Service struct {
@@ -15,13 +17,13 @@ func New(repo repository.UserRepository) UseCase {
 	return &Service{repo}
 }
 
-func (s *Service) CreateUser(ctx context.Context, user *entity.User) error {
-	err := s.repo.CreateUser(ctx, user)
+func (s *Service) CreateUser(ctx context.Context, user *entity.User) (uuid.UUID, error) {
+	id, err := s.repo.CreateUser(ctx, user)
 	if err != nil {
-		return fmt.Errorf("CreateUser() error: %w", err)
+		return uuid.Nil, fmt.Errorf("CreateUser() error: %w", err)
 	}
 
-	return nil
+	return id, nil
 }
 
 func (s *Service) GetUserByEmail(ctx context.Context, email string) (*entity.User, error) {
@@ -33,7 +35,7 @@ func (s *Service) GetUserByEmail(ctx context.Context, email string) (*entity.Use
 	return user, nil
 }
 
-func (s *Service) DeleteUserById(ctx context.Context, id int) error {
+func (s *Service) DeleteUserById(ctx context.Context, id uuid.UUID) error {
 	err := s.repo.DeleteUserById(ctx, id)
 	if err != nil {
 		return fmt.Errorf("DeleteUserById() error: %w", err)

@@ -27,3 +27,11 @@ go.work
 
 # Config
 .env
+config/*/config.yaml
+
+#docker
+docker/data
+
+#proto generated files
+pkg/protobuf/*/gw
+pkg/protobuf/*/*.pb.go
