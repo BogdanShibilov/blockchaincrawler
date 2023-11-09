@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Service struct {
@@ -18,6 +19,12 @@ func New(repo repository.UserRepository) UseCase {
 }
 
 func (s *Service) CreateUser(ctx context.Context, user *entity.User) (uuid.UUID, error) {
+	var err error
+	user.Password, err = hashPassword(user.Password)
+	if err != nil {
+		return uuid.Nil, fmt.Errorf("failed to hash password: %w", err)
+	}
+
 	id, err := s.repo.CreateUser(ctx, user)
 	if err != nil {
 		return uuid.Nil, fmt.Errorf("CreateUser() error: %w", err)
@@ -42,4 +49,22 @@ func (s *Service) DeleteUserById(ctx context.Context, id uuid.UUID) error {
 	}
 
 	return nil
+}
+func (s *Service) IsValidLogin(ctx context.Context, reqEmail string, reqPassword string) error {
+	user, err := s.GetUserByEmail(ctx, reqEmail)
+	if err != nil {
+		return fmt.Errorf("GetUserByEmail error: %w", err)
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(reqPassword))
+	if err != nil {
+		return fmt.Errorf("error while comparing hash and password: %w", err)
+	}
+
+	return nil
+}
+
+func hashPassword(pass string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(pass), 10)
+	return string(bytes), err
 }

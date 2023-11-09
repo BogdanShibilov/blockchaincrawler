@@ -8,6 +8,7 @@ service UserService {
     rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
     rpc GetUserByEmail (GetUserByEmailRequest) returns (GetUserByEmailResponse);
     rpc DeleteUserById (DeleteUserByIdRequest) returns (DeleteUserByIdResponse);
+    rpc IsValidLogin (IsValidLoginRequest) returns (IsValidLoginResponse);
 }
 
 message CreateUserRequest {
@@ -32,6 +33,15 @@ message DeleteUserByIdRequest {
 
 message DeleteUserByIdResponse {
     string id = 1;
+}
+
+message IsValidLoginRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message IsValidLoginResponse {
+    bool is_valid = 1;
 }
 
 message User {

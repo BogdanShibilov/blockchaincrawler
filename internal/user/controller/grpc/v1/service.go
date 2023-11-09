@@ -5,10 +5,12 @@ import (
 	"blockchaincrawler/internal/user/user"
 	pb "blockchaincrawler/pkg/protobuf/userservice/gw"
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Service struct {
@@ -71,5 +73,21 @@ func (s *Service) DeleteUserById(ctx context.Context, request *pb.DeleteUserById
 
 	return &pb.DeleteUserByIdResponse{
 		Id: request.Id,
+	}, nil
+}
+
+func (s *Service) IsValidLogin(ctx context.Context, request *pb.IsValidLoginRequest) (*pb.IsValidLoginResponse, error) {
+	err := s.usecase.IsValidLogin(ctx, request.Email, request.Password)
+	if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+		return &pb.IsValidLoginResponse{
+			IsValid: false,
+		}, nil
+	} else if err != nil {
+		s.logger.Errorf("isValidLogin() error: %w", err)
+		return nil, fmt.Errorf("IsValidLogin error %w: ", err)
+	}
+
+	return &pb.IsValidLoginResponse{
+		IsValid: false,
 	}, nil
 }
