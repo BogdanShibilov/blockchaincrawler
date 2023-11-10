@@ -5,11 +5,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type GenerateJwtTokenRequest struct {
-	Email    string
-	Password string
-}
-
 type JwtUserToken struct {
 	Token        string
 	RefreshToken string

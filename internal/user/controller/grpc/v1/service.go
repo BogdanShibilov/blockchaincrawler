@@ -54,6 +54,7 @@ func (s *Service) GetUserByEmail(ctx context.Context, request *pb.GetUserByEmail
 		Result: &pb.User{
 			Id:          user.ID.String(),
 			Email:       user.Email,
+			Password:    user.Password,
 			IsConfirmed: user.IsConfirmed,
 		},
 	}, nil
@@ -88,6 +89,6 @@ func (s *Service) IsValidLogin(ctx context.Context, request *pb.IsValidLoginRequ
 	}
 
 	return &pb.IsValidLoginResponse{
-		IsValid: false,
+		IsValid: true,
 	}, nil
 }

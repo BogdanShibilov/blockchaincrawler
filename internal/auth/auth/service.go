@@ -22,16 +22,16 @@ func New(secret string, userTransport *transport.UserGrpcTransport) UseCase {
 		userGrpcTransport: userTransport,
 	}
 }
-func (a *Service) GenerateJwtToken(ctx context.Context, req GenerateJwtTokenRequest) (*JwtUserToken, error) {
-	isValid, err := a.userGrpcTransport.IsValidLogin(ctx, req.Email, req.Password)
+func (a *Service) GenerateJwtToken(ctx context.Context, email string, password string) (*JwtUserToken, error) {
+	isValid, err := a.userGrpcTransport.IsValidLogin(ctx, email, password)
 	if err != nil {
-		return nil, fmt.Errorf("failed to check validness of email and password")
+		return nil, fmt.Errorf("failed to check validness of email and password: %w", err)
 	}
 	if !isValid {
 		return nil, errors.New("invalid credentials")
 	}
 
-	user, _ := a.userGrpcTransport.GetUserByEmail(ctx, req.Email)
+	user, _ := a.userGrpcTransport.GetUserByEmail(ctx, email)
 	userId, err := uuid.Parse(user.Id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse uuid: %w", err)

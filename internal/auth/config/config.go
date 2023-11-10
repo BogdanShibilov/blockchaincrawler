@@ -1,6 +1,9 @@
 package config
 
 type Config struct {
+	GrpcServer GrpcServer `yaml:"grpcServer"`
+	Auth       Auth       `yaml:"auth"`
+	Transport  Transport  `yaml:"transport"`
 }
 
 type GrpcServer struct {

@@ -19,7 +19,7 @@ type UserGrpcTransport struct {
 func NewUserGrpcTransport(config config.UserGrpcTransport) (*UserGrpcTransport, error) {
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
-	conn, err := grpc.Dial(config.Host, opts...)
+	conn, err := grpc.Dial(config.Host+config.Port, opts...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to dial user grpc server on %v%v error: %w", config.Host, config.Port, err)
 	}

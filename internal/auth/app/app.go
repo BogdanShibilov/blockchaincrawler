@@ -1,11 +1,10 @@
 package app
 
 import (
-	"blockchaincrawler/internal/user/config"
-	v1 "blockchaincrawler/internal/user/controller/grpc/v1"
-	"blockchaincrawler/internal/user/database/postgres"
-	"blockchaincrawler/internal/user/repository"
-	"blockchaincrawler/internal/user/user"
+	"blockchaincrawler/internal/auth/auth"
+	"blockchaincrawler/internal/auth/config"
+	v1 "blockchaincrawler/internal/auth/controller/grpc/v1"
+	"blockchaincrawler/internal/auth/transport"
 	"context"
 	"os"
 	"os/signal"
@@ -37,22 +36,14 @@ func (a *App) Run() {
 	ctx, cancel := context.WithCancel(context.TODO())
 	_ = ctx
 
-	mainDb, err := postgres.NewWithGorm(cfg.Database.Main)
+	userTransport, err := transport.NewUserGrpcTransport(cfg.Transport.UserGrpc)
 	if err != nil {
-		l.Panicf("failed connect to main db on '%s:%d': %w", cfg.Database.Main.Host, cfg.Database.Main.Port, err)
+		l.Panicf("failed to create auth grpc transport: %w", err)
 	}
-	defer func() {
-		if err := mainDb.Close(); err != nil {
-			l.Panicf("failed to close main db err: %w", err)
-		}
-		l.Info("main db was succesfully closed")
-	}()
 
-	repo := repository.New(mainDb)
+	authUsecase := auth.New(cfg.Auth.JwtSecretKey, userTransport)
 
-	userUsecase := user.New(repo)
-
-	grpcService := v1.NewService(userUsecase, l)
+	grpcService := v1.NewService(authUsecase, l)
 	grpcServer := v1.NewServer(cfg.GrpcServer.Port, grpcService)
 
 	err = grpcServer.Start()
