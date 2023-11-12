@@ -5,6 +5,8 @@ import (
 	"blockchaincrawler/internal/auth/config"
 	v1 "blockchaincrawler/internal/auth/controller/grpc/v1"
 	"blockchaincrawler/internal/auth/transport"
+	"blockchaincrawler/internal/kafka"
+	"blockchaincrawler/pkg/redis"
 	"context"
 	"os"
 	"os/signal"
@@ -41,7 +43,18 @@ func (a *App) Run() {
 		l.Panicf("failed to create auth grpc transport: %w", err)
 	}
 
-	authUsecase := auth.New(cfg.Auth.JwtSecretKey, userTransport)
+	confirmDb, err := redis.New()
+	if err != nil {
+		l.Panicf("failed to connect to confirmDb: %v", err)
+	}
+	defer confirmDb.Close()
+
+	confirmCodeProducer, err := kafka.NewProducer(cfg.Kafka)
+	if err != nil {
+		l.Panicf("failed to create confirm code producer: %v", err)
+	}
+
+	authUsecase := auth.New(cfg.Auth.JwtSecretKey, userTransport, confirmCodeProducer, confirmDb)
 
 	grpcService := v1.NewService(authUsecase, l)
 	grpcServer := v1.NewServer(cfg.GrpcServer.Port, grpcService)

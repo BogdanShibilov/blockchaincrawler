@@ -12,4 +12,5 @@ type UseCase interface {
 	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
 	DeleteUserById(ctx context.Context, id uuid.UUID) error
 	IsValidLogin(ctx context.Context, email string, password string) error
+	ConfirmUser(ctx context.Context, email string) error
 }

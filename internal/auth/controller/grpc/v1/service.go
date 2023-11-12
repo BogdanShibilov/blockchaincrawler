@@ -47,3 +47,27 @@ func (s *Service) RenewJwtToken(ctx context.Context, request *authpb.RenewJwtTok
 		RefreshToken: newToken.RefreshToken,
 	}, nil
 }
+
+func (s *Service) ConfirmUser(ctx context.Context, request *authpb.ConfirmUserRequest) (*authpb.ConfirmUserResponse, error) {
+	err := s.usecase.ConfirmUser(ctx, request.Email, request.Code)
+	if err != nil {
+		s.logger.Errorf("failed to confirm user %v: %v", request.Email, err)
+		return nil, fmt.Errorf("failed to confirm user %v: %v", request.Email, err)
+	}
+
+	return &authpb.ConfirmUserResponse{
+		IsSuccesful: true,
+	}, nil
+}
+
+func (s *Service) RegisterUser(ctx context.Context, request *authpb.RegisterUserRequest) (*authpb.RegisterUserResponse, error) {
+	_, err := s.usecase.CreateUser(ctx, request.Email, request.Password)
+	if err != nil {
+		s.logger.Errorf("failed to register user %v: %v", request.Email, err)
+		return nil, fmt.Errorf("failed to register user %v: %v", request.Email, err)
+	}
+
+	return &authpb.RegisterUserResponse{
+		Email: request.Email,
+	}, nil
+}

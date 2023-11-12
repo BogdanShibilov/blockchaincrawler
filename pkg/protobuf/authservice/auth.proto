@@ -7,6 +7,8 @@ option go_package = "./;authpb";
 service AuthService {
     rpc GenerateJwtToken (GenerateJwtTokenRequest) returns (GenerateJwtTokenResponse);
     rpc RenewJwtToken (RenewJwtTokenRequest) returns (RenewJwtTokenResponse);
+    rpc ConfirmUser (ConfirmUserRequest) returns (ConfirmUserResponse);
+    rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse);
 }
 
 message GenerateJwtTokenRequest {
@@ -26,4 +28,22 @@ message RenewJwtTokenRequest {
 message RenewJwtTokenResponse {
     string token = 1;
     string refresh_token = 2;
+}
+
+message ConfirmUserRequest {
+    string email = 1;
+    string code = 2;
+}
+
+message ConfirmUserResponse {
+    bool is_succesful = 1;
+}
+
+message RegisterUserRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message RegisterUserResponse {
+    string email = 1;
 }

@@ -9,6 +9,7 @@ service UserService {
     rpc GetUserByEmail (GetUserByEmailRequest) returns (GetUserByEmailResponse);
     rpc DeleteUserById (DeleteUserByIdRequest) returns (DeleteUserByIdResponse);
     rpc IsValidLogin (IsValidLoginRequest) returns (IsValidLoginResponse);
+    rpc ConfirmUser (ConfirmUserRequest) returns (ConfirmUserResponse);
 }
 
 message CreateUserRequest {
@@ -49,4 +50,12 @@ message User {
     string email = 2;
     string password = 3;
     bool is_confirmed = 4;
+}
+
+message ConfirmUserRequest {
+    string email = 1;
+}
+
+message ConfirmUserResponse {
+    bool is_confirmed = 1;
 }

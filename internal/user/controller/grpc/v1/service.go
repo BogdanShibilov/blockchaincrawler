@@ -92,3 +92,15 @@ func (s *Service) IsValidLogin(ctx context.Context, request *pb.IsValidLoginRequ
 		IsValid: true,
 	}, nil
 }
+
+func (s *Service) ConfirmUser(ctx context.Context, request *pb.ConfirmUserRequest) (*pb.ConfirmUserResponse, error) {
+	err := s.usecase.ConfirmUser(ctx, request.Email)
+	if err != nil {
+		s.logger.Errorf("ConfirmUser error: %v", err)
+		return nil, fmt.Errorf("ConfirmUser error: %w", err)
+	}
+
+	return &pb.ConfirmUserResponse{
+		IsConfirmed: true,
+	}, nil
+}

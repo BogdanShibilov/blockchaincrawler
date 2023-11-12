@@ -64,6 +64,21 @@ func (s *Service) IsValidLogin(ctx context.Context, reqEmail string, reqPassword
 	return nil
 }
 
+func (s *Service) ConfirmUser(ctx context.Context, email string) error {
+	user, err := s.repo.GetUserByEmail(ctx, email)
+	if err != nil {
+		return fmt.Errorf("GetUserByEmail() error: %w", err)
+	}
+
+	user.IsConfirmed = true
+	err = s.repo.UpdateUserById(ctx, user)
+	if err != nil {
+		return fmt.Errorf("failed to update user, confirmed to true: %w", err)
+	}
+
+	return nil
+}
+
 func hashPassword(pass string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(pass), 10)
 	return string(bytes), err

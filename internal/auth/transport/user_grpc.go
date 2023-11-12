@@ -86,3 +86,14 @@ func (t *UserGrpcTransport) IsValidLogin(ctx context.Context, email string, pass
 
 	return res.IsValid, nil
 }
+
+func (t *UserGrpcTransport) ConfirmUser(ctx context.Context, email string) (bool, error) {
+	res, err := t.client.ConfirmUser(ctx, &pb.ConfirmUserRequest{
+		Email: email,
+	})
+	if err != nil {
+		return false, fmt.Errorf("grpcClient.ConfirmUser error: %w", err)
+	}
+
+	return res.IsConfirmed, nil
+}

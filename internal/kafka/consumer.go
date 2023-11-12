@@ -1,0 +1,72 @@
+package kafka
+
+import (
+	"blockchaincrawler/internal/auth/config"
+	"fmt"
+	"strings"
+
+	"github.com/IBM/sarama"
+	"go.uber.org/zap"
+)
+
+type ConsumerCallback interface {
+	Callback(message <-chan *sarama.ConsumerMessage, error <-chan *sarama.ConsumerError)
+}
+
+type Consumer struct {
+	logger   *zap.SugaredLogger
+	topics   []string
+	master   sarama.Consumer
+	callback ConsumerCallback
+}
+
+func NewConsumer(logger *zap.SugaredLogger, cfg config.Kafka, callback ConsumerCallback) (*Consumer, error) {
+	samaraCfg := sarama.NewConfig()
+	samaraCfg.ClientID = "go-kafka-consumer"
+	samaraCfg.Consumer.Return.Errors = true
+
+	master, err := sarama.NewConsumer(cfg.Brokers, samaraCfg)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create consumer: %w", err)
+	}
+
+	return &Consumer{
+		logger:   logger,
+		topics:   cfg.Consumer.Topics,
+		master:   master,
+		callback: callback,
+	}, nil
+}
+
+func (c *Consumer) Start() {
+	consumers := make(chan *sarama.ConsumerMessage, 1)
+	errors := make(chan *sarama.ConsumerError)
+
+	for _, topic := range c.topics {
+		if strings.Contains(topic, "_consumer_offsets") {
+			continue
+		}
+
+		partitions, _ := c.master.Partitions(topic)
+
+		consumer, err := c.master.ConsumePartition(topic, partitions[0], sarama.OffsetNewest)
+		if err != nil {
+			c.logger.Errorf("Topic %v Partitions: %v, err: %v", topic, partitions, err)
+			continue
+		}
+
+		c.logger.Info(" Start consuming topic ", topic)
+
+		go func(topic string, consumer sarama.PartitionConsumer) {
+			for {
+				select {
+				case consumerError := <-consumer.Errors():
+					errors <- consumerError
+				case msg := <-consumer.Messages():
+					consumers <- msg
+				}
+			}
+		}(topic, consumer)
+	}
+	c.callback.Callback(consumers, errors)
+}

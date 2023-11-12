@@ -2,9 +2,16 @@ package auth
 
 import (
 	"blockchaincrawler/internal/auth/transport"
+	"blockchaincrawler/internal/kafka"
+	pb "blockchaincrawler/pkg/protobuf/userservice/gw"
+	"blockchaincrawler/pkg/redis"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
+	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -14,12 +21,16 @@ import (
 type Service struct {
 	secretString      string
 	userGrpcTransport *transport.UserGrpcTransport
+	codeProducer      *kafka.Producer
+	redisdb           *redis.Redis
 }
 
-func New(secret string, userTransport *transport.UserGrpcTransport) UseCase {
+func New(secret string, userTransport *transport.UserGrpcTransport, codeProducer *kafka.Producer, redisdb *redis.Redis) UseCase {
 	return &Service{
 		secretString:      secret,
 		userGrpcTransport: userTransport,
+		redisdb:           redisdb,
+		codeProducer:      codeProducer,
 	}
 }
 func (a *Service) GenerateJwtToken(ctx context.Context, email string, password string) (*JwtUserToken, error) {
@@ -71,6 +82,50 @@ func (a *Service) RenewJwtToken(ctx context.Context, refreshToken string) (*JwtU
 	}, nil
 }
 
+func (a *Service) CreateUser(ctx context.Context, email string, password string) (*uuid.UUID, error) {
+	userId, err := a.userGrpcTransport.CreateUser(ctx, &pb.User{
+		Email:    email,
+		Password: password,
+	})
+	if err != nil {
+		return &uuid.Nil, fmt.Errorf("failed to create new user: %w", err)
+	}
+
+	confirmCode := generateRandomCode()
+	a.redisdb.Client.Set(ctx, email, confirmCode, time.Minute*5)
+
+	byteConfirmCode, err := json.Marshal(confirmCode)
+	if err != nil {
+		return &uuid.Nil, fmt.Errorf("failed to marshal confirm code: %w", err)
+	}
+
+	a.codeProducer.ProduceMessage(byteConfirmCode)
+	log.Println("Produced message: " + string(byteConfirmCode))
+
+	return userId, nil
+}
+
+func (a *Service) ConfirmUser(ctx context.Context, email string, code string) error {
+	redisCmd := a.redisdb.Get(ctx, email)
+	if redisCmd.Err() != nil {
+		return fmt.Errorf("failed to get code from redis db: %w", redisCmd.Err())
+	}
+	storedCode, _ := redisCmd.Result()
+	if strings.Compare(storedCode, code) != 0 {
+		return errors.New("invalid confirmation code")
+	}
+
+	isConfirmed, err := a.userGrpcTransport.ConfirmUser(ctx, email)
+	if err != nil {
+		return fmt.Errorf("failed to confirm user on userservice: %w", err)
+	}
+	if !isConfirmed {
+		return errors.New("user didnot get confirmed")
+	}
+
+	return nil
+}
+
 func (a *Service) parseToken(tokenString string) (jwt.MapClaims, error) {
 	secretKey := []byte(a.secretString)
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
@@ -116,4 +171,8 @@ func (a *Service) createNewTokenString(
 	}
 
 	return tokenString, nil
+}
+
+func generateRandomCode() string {
+	return fmt.Sprintf("%d%d%d%d", rand.Intn(10), rand.Intn(10), rand.Intn(10), rand.Intn(10))
 }

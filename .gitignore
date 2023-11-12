@@ -31,6 +31,9 @@ config/*/config.yaml
 
 #docker
 docker/data
+docker/usercodedb
+docker/zoodata
+docker/cleardata.sh
 
 #proto generated files
 pkg/protobuf/*/gw
