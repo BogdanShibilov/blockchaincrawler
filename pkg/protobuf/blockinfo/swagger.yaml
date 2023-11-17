@@ -1,0 +1,21 @@
+openapiOptions:
+  file:
+    - file: "blockinfo.proto"
+      option:
+        info:
+          title: "Сервис для работы с данными юзера"
+          version: "1.0"
+          contact:
+            name: "blockinfoservice"
+            url: "https://github.com/name"
+            email: "mail@gmail.com"
+        external_docs:
+          url: "https://github.com/name"
+          description: "CRUD service for block information"
+        schemes:
+          - HTTPS
+          - HTTP
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"

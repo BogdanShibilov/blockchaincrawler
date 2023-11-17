@@ -18,6 +18,6 @@ func main() {
 	c.CrawlNewBlocks(blocks)
 
 	for b := range blocks {
-		fmt.Println(b.Block.Number())
+		fmt.Println(b.Block.Bloom().Bytes())
 	}
 }
