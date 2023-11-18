@@ -9,3 +9,13 @@ services:
       POSTGRES_DB: 'postgres'
     ports:
       - 5432:5432
+
+  user:
+    container_name: user
+    image: postgres:16.0
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: 'postgres'
+    ports:
+      - 5433:5432

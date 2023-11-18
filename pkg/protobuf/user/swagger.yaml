@@ -1,17 +1,17 @@
 openapiOptions:
   file:
-    - file: "blockinfo.proto"
+    - file: "user.proto"
       option:
         info:
-          title: "CRUD service for block information"
+          title: "CRUD service for user information"
           version: "1.0"
           contact:
-            name: "blockinfoservice"
+            name: "userservice"
             url: "https://github.com/name"
             email: "mail@gmail.com"
         external_docs:
           url: "https://github.com/name"
-          description: "CRUD service for block information"
+          description: "CRUD service for user information"
         schemes:
           - HTTPS
           - HTTP
