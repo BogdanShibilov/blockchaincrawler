@@ -15,7 +15,10 @@ func main() {
 	}
 
 	blocks := make(chan *crawler.Result)
-	c.CrawlNewBlocks(blocks)
+	err = c.CrawlNewBlocks(blocks)
+	if err != nil {
+		l.Panic(err)
+	}
 
 	for b := range blocks {
 		fmt.Println(b.Block.Bloom().Bytes())

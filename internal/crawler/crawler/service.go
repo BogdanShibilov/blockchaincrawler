@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/bogdanshibilov/blockchaincrawler/pkg/logger"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
+
+	"github.com/bogdanshibilov/blockchaincrawler/pkg/logger"
 )
 
 type Crawler struct {

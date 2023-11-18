@@ -3,10 +3,11 @@ package postgres
 import (
 	"fmt"
 
-	"github.com/bogdanshibilov/blockchaincrawler/internal/user/config"
-	"github.com/bogdanshibilov/blockchaincrawler/internal/user/entity"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"github.com/bogdanshibilov/blockchaincrawler/internal/user/config"
+	"github.com/bogdanshibilov/blockchaincrawler/internal/user/entity"
 )
 
 type Pg struct {
@@ -31,7 +32,10 @@ func NewWithGorm(cfg config.DbNode) (*Pg, error) {
 		return nil, fmt.Errorf("failed to connect to db: %w", err)
 	}
 
-	db.AutoMigrate(&entity.User{})
+	err = db.AutoMigrate(&entity.User{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to auto migrate: %w", err)
+	}
 
 	return &Pg{db}, nil
 }

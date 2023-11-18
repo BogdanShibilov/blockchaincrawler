@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/database/postgres"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/entity"
-	"github.com/google/uuid"
 )
 
 type User struct {

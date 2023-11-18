@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/entity"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/repository"
-	"github.com/google/uuid"
 )
 
 type Service struct {

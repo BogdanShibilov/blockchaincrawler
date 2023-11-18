@@ -3,8 +3,9 @@ package repository
 import (
 	"context"
 
-	"github.com/bogdanshibilov/blockchaincrawler/internal/user/entity"
 	"github.com/google/uuid"
+
+	"github.com/bogdanshibilov/blockchaincrawler/internal/user/entity"
 )
 
 type UserRepository interface {

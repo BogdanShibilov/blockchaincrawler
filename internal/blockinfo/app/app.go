@@ -6,12 +6,13 @@ import (
 	"os/signal"
 	"syscall"
 
+	"go.uber.org/zap"
+
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/blockinfo"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/config"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/database/postgres"
 	v1 "github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/grpcserver/v1"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/repository"
-	"go.uber.org/zap"
 )
 
 type App struct {

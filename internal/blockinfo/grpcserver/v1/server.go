@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"net"
 
-	pb "github.com/bogdanshibilov/blockchaincrawler/pkg/protobuf/blockinfo/gw"
 	"google.golang.org/grpc"
+
+	pb "github.com/bogdanshibilov/blockchaincrawler/pkg/protobuf/blockinfo/gw"
 )
 
 type Server struct {
@@ -34,6 +35,7 @@ func (s *Server) Start() error {
 
 	pb.RegisterBlockInfoServiceServer(s.grpcServer, s.service)
 
+	//nolint:all
 	go s.grpcServer.Serve(listener)
 
 	return nil

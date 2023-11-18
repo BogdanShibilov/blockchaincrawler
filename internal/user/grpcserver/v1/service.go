@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
+	"go.uber.org/zap"
+
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/entity"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/user"
 	pb "github.com/bogdanshibilov/blockchaincrawler/pkg/protobuf/user/gw"
-	"github.com/google/uuid"
-	"go.uber.org/zap"
 )
 
 type Service struct {

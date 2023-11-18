@@ -3,15 +3,21 @@ package main
 import (
 	"fmt"
 
+	"github.com/spf13/viper"
+
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/app"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/config"
 	"github.com/bogdanshibilov/blockchaincrawler/pkg/logger"
-	"github.com/spf13/viper"
 )
 
 func main() {
 	logger := logger.NewZap()
-	defer logger.Sync()
+	defer func() {
+		err := logger.Sync()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}()
 
 	cfg, err := loadConfig("./../../config/blockinfo")
 	if err != nil {

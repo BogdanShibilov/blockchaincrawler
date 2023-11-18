@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"go.uber.org/zap"
+
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/blockinfo"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/entity"
 	pb "github.com/bogdanshibilov/blockchaincrawler/pkg/protobuf/blockinfo/gw"
-	"go.uber.org/zap"
 )
 
 type Service struct {
