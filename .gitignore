@@ -27,6 +27,7 @@ go.work
 
 # Config
 .env
+config/*/config.yaml
 
 #proto
 pkg/protobuf/*/gw
