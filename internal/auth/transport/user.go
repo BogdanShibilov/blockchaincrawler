@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/bogdanshibilov/blockchaincrawler/internal/auth/config"
-	pb "github.com/bogdanshibilov/blockchaincrawler/pkg/protobuf/user/gw"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/bogdanshibilov/blockchaincrawler/internal/auth/config"
+	pb "github.com/bogdanshibilov/blockchaincrawler/pkg/protobuf/user/gw"
 )
 
 type User struct {

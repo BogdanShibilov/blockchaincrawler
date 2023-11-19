@@ -3,8 +3,8 @@ package auth
 import "github.com/golang-jwt/jwt/v5"
 
 type JwtToken struct {
-	AccessToken  string
-	RefreshToken string
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
 }
 
 type AccessTokenClaims struct {
