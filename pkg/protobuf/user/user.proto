@@ -7,6 +7,7 @@ option go_package = "./;pb";
 service UserService {
     rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
     rpc GetUserByEmail (GetUserByEmailRequest) returns (GetUserByEmailResponse);
+    rpc GetUserById (GetUserByIdRequest) returns (GetUserByIdResponse);
     rpc GetAllUsers (GetAllUsersRequest) returns (GetAllUsersResponse);
     rpc DeleteUserById (DeleteUserByIdRequest) returns (DeleteUserByIdResponse);
     rpc ConfirmUser (ConfirmUserRequest) returns (ConfirmUserResponse);
@@ -26,6 +27,14 @@ message GetUserByEmailRequest {
 }
 
 message GetUserByEmailResponse {
+    User user = 1;
+}
+
+message GetUserByIdRequest {
+    string id = 1;
+}
+
+message GetUserByIdResponse {
     User user = 1;
 }
 

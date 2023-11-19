@@ -64,6 +64,23 @@ func (s *Service) GetUserByEmail(ctx context.Context, req *pb.GetUserByEmailRequ
 	}, nil
 }
 
+func (s *Service) GetUserById(ctx context.Context, req *pb.GetUserByIdRequest) (*pb.GetUserByIdResponse, error) {
+	user, err := s.usecase.GetUserById(ctx, req.Id)
+	if err != nil {
+		s.logger.Errorf("failed to get user by id: %v", err)
+		return nil, fmt.Errorf("faield to get user by email: %w", err)
+	}
+
+	return &pb.GetUserByIdResponse{
+		User: &pb.User{
+			Id:             user.ID.String(),
+			Email:          user.Email,
+			HashedPassword: user.Password,
+			IsConfirmed:    user.IsConfirmed,
+		},
+	}, nil
+}
+
 func (s *Service) GetAllUsers(ctx context.Context, req *pb.GetAllUsersRequest) (*pb.GetAllUsersResponse, error) {
 	users, err := s.usecase.GetAllUsers(ctx)
 	if err != nil {

@@ -49,6 +49,10 @@ func (u *User) GetUserByEmail(ctx context.Context, req *pb.GetUserByEmailRequest
 	return res, nil
 }
 
+func (u *User) GetUserById(ctx context.Context, req *pb.GetUserByIdRequest) (*pb.GetUserByIdResponse, error) {
+	return u.client.GetUserById(ctx, req)
+}
+
 func (u *User) GetAllUsers(ctx context.Context) (*pb.GetAllUsersResponse, error) {
 	res, err := u.client.GetAllUsers(ctx, &pb.GetAllUsersRequest{})
 	if err != nil {
