@@ -10,8 +10,8 @@ services:
     ports:
       - 5432:5432
 
-  user:
-    container_name: user
+  users:
+    container_name: users
     image: postgres:16.0
     environment:
       POSTGRES_USER: 'postgres'

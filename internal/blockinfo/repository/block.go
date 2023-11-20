@@ -44,7 +44,7 @@ func (b *Block) GetAllBlocks(ctx context.Context) (blocks []*entity.Block, err e
 }
 
 func (b *Block) GetBlockHeaderByHash(ctx context.Context, hash string) (header *entity.Header, err error) {
-	res := b.main.DB.WithContext(ctx).Where("block_hash = ?", hash).First(&header)
+	res := b.main.DB.WithContext(ctx).Where("block_hash = ?", hash).Preload("Block").First(&header)
 	if res.Error != nil {
 		return nil, fmt.Errorf("failed to get block header err: %w", err)
 	}

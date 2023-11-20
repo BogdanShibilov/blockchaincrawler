@@ -3,24 +3,41 @@ package main
 import (
 	"fmt"
 
-	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/crawler"
+	"github.com/spf13/viper"
+
+	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/app"
+	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/config"
 	"github.com/bogdanshibilov/blockchaincrawler/pkg/logger"
 )
 
 func main() {
-	l := logger.NewZap()
-	c, err := crawler.NewCrawler("wss://ethereum-sepolia.publicnode.com", l)
+	logger := logger.NewZap()
+	defer logger.Sync()
+
+	cfg, err := loadConfig("./../../config/crawler")
 	if err != nil {
-		l.Panic(err)
+		logger.Panicf("failed to load config error: %v", err)
 	}
 
-	blocks := make(chan *crawler.Result)
-	err = c.CrawlNewBlocks(blocks)
+	app := app.New(logger, &cfg)
+	app.Run()
+}
+
+func loadConfig(path string) (config config.Config, err error) {
+	viper.AddConfigPath(path)
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+
+	viper.AutomaticEnv()
+
+	err = viper.ReadInConfig()
 	if err != nil {
-		l.Panic(err)
+		return config, fmt.Errorf("failed to ReadInConfig err: %w", err)
 	}
 
-	for b := range blocks {
-		fmt.Println(b.Block.Bloom().Bytes())
+	err = viper.Unmarshal(&config)
+	if err != nil {
+		return config, fmt.Errorf("failed to Unmarshal config err: %w", err)
 	}
+	return config, nil
 }

@@ -1,0 +1,12 @@
+server:
+  port: "9092"
+
+auth:
+  jwtSecretKey: "secretjwtkey"
+  accessTokenDuration: 10
+  refreshTokenDuration: 20
+
+transport:
+  userTransport:
+    host: "127.0.0.1"
+    port: "9091"
