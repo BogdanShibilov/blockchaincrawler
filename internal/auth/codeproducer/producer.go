@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/IBM/sarama"
+
 	"github.com/bogdanshibilov/blockchaincrawler/internal/auth/config"
 )
 

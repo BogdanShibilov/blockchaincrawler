@@ -6,11 +6,12 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/ethereum/go-ethereum/core/types"
+
 	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/config"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/crawler"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/transport"
 	"github.com/bogdanshibilov/blockchaincrawler/pkg/logger"
-	"github.com/ethereum/go-ethereum/core/types"
 )
 
 type App struct {

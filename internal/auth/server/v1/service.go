@@ -70,3 +70,13 @@ func (s *Service) SendConfirmationCode(ctx context.Context, req *pb.SendConfirma
 
 	return &pb.SendConfirmationCodeResponse{}, nil
 }
+
+func (s *Service) ConfirmUser(ctx context.Context, req *pb.ConfirmUserRequest) (*pb.ConfirmUserResponse, error) {
+	err := s.usecase.ConfirmUser(ctx, req.Email, req.Code)
+	if err != nil {
+		s.logger.Errorf("failed to confirm email: %v", err)
+		return nil, fmt.Errorf("failed to confirm email: %w", err)
+	}
+
+	return &pb.ConfirmUserResponse{}, nil
+}

@@ -50,7 +50,7 @@ func (c *Crawler) Crawl(
 			case err := <-sub.Err():
 				errCh <- err
 			case header := <-headers:
-				c.l.Infof("got new header with number: %v\n", header.Number)
+				c.l.Infof("got new header with number: %v", header.Number)
 				block, err := c.client.BlockByHash(ctx, header.Hash())
 				if err != nil {
 					errCh <- err
@@ -65,7 +65,7 @@ func (c *Crawler) Crawl(
 
 func (c *Crawler) WriteBlocks(ctx context.Context, blocks chan *types.Block, errCh chan error) {
 	for block := range blocks {
-		c.l.Infof("writing new block with number: %v\n", block.Number())
+		c.l.Infof("writing new block with number: %v", block.Number())
 		req := &pb.CreateBlockRequest{
 			Header: &pb.Header{
 				ParentHash:  block.ParentHash().Hex(),
