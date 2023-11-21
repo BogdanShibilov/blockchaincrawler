@@ -16,4 +16,6 @@ type Jwt interface {
 
 type User interface {
 	CreateUser(ctx context.Context, email string, password string) (string, error)
+	SendConfirmationCode(ctx context.Context, email string) error
+	ConfirmUser(ctx context.Context, email string, code string) error
 }

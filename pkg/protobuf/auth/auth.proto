@@ -8,6 +8,7 @@ service AuthService {
     rpc GenerateJwtToken (GenerateJwtTokenRequest) returns (GenerateJwtTokenResponse);
     rpc RenewJwtToken (RenewJwtTokenRequest) returns (RenewJwtTokenResponse);
     rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+    rpc SendConfirmationCode (SendConfirmationCodeRequest) returns (SendConfirmationCodeResponse);
 }
 
 message GenerateJwtTokenRequest {
@@ -36,4 +37,12 @@ message CreateUserRequest {
 
 message CreateUserResponse {
     string userId = 1;
+}
+
+message SendConfirmationCodeRequest {
+    string email = 1;
+}
+
+message SendConfirmationCodeResponse {
+    
 }

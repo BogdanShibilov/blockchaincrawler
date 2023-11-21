@@ -9,9 +9,11 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/bogdanshibilov/blockchaincrawler/internal/auth/auth"
+	"github.com/bogdanshibilov/blockchaincrawler/internal/auth/codeproducer"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/auth/config"
 	v1 "github.com/bogdanshibilov/blockchaincrawler/internal/auth/server/v1"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/auth/transport"
+	"github.com/bogdanshibilov/blockchaincrawler/pkg/redis"
 )
 
 type App struct {
@@ -39,7 +41,15 @@ func (a *App) Run() {
 	if err != nil {
 		l.Panicf("could not create user transport: %v", err)
 	}
-	authUseCase := auth.New(cfg.Auth, userTransport)
+	codeProducer, err := codeproducer.NewCodeProducer(cfg.CodeProducer)
+	if err != nil {
+		l.Panicf("could not create code producer: %v", err)
+	}
+	codeDb, err := redis.New()
+	if err != nil {
+		l.Panicf("failed to connect to codeDb: %v", err)
+	}
+	authUseCase := auth.New(cfg.Auth, userTransport, codeProducer, codeDb)
 
 	l.Infof("Starting server on port %v", cfg.Server.Port)
 	grpcService := v1.NewService(authUseCase, l)
@@ -50,6 +60,12 @@ func (a *App) Run() {
 		l.Panicf("failed to start grpc server error: %v", err)
 	}
 	defer grpcServer.Close()
+
+	go func() {
+		for kafkaErr := range codeProducer.Errors() {
+			l.Errorf("kafka error: %v", kafkaErr)
+		}
+	}()
 
 	a.gracefulShutdown(cancel)
 }

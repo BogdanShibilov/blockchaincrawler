@@ -60,3 +60,13 @@ func (s *Service) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*p
 		UserId: userId,
 	}, nil
 }
+
+func (s *Service) SendConfirmationCode(ctx context.Context, req *pb.SendConfirmationCodeRequest) (*pb.SendConfirmationCodeResponse, error) {
+	err := s.usecase.SendConfirmationCode(ctx, req.Email)
+	if err != nil {
+		s.logger.Errorf("failed to send confirmation code: %v", err)
+		return nil, fmt.Errorf("failed to send confirmation code: %w", err)
+	}
+
+	return &pb.SendConfirmationCodeResponse{}, nil
+}
