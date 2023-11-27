@@ -5,61 +5,11 @@ package blockinfoservice;
 option go_package = "./;pb";
 
 service BlockInfoService {
-    rpc CreateBlock (CreateBlockRequest) returns (CreateBlockResponse);
-    rpc GetBlockByHash (GetBlockByHashRequest) returns (GetBlockByHashResponse);
-    rpc GetAllBlocks (GetAllBlocksRequest) returns (GetAllBlocksResponse);
-    rpc GetBlockHeaderByHash (GetBlockHeaderByHashRequest) returns (GetBlockHeaderByHashResponse);
+    rpc CreateHeader (CreateHeaderRequest) returns (Empty);
 }
 
-message CreateBlockRequest {
-    Header header = 1;
+message CreateHeaderRequest {
+    bytes headerJson = 1;
 }
 
-message CreateBlockResponse {}
-
-message GetBlockByHashRequest {
-    string hash = 1;
-}
-
-message GetBlockByHashResponse {
-    Block block = 1;
-}
-
-message GetAllBlocksRequest {}
-
-message GetAllBlocksResponse {
-    repeated Block blocks = 1;
-}
-
-message GetBlockHeaderByHashRequest {
-    string hash = 1;
-}
-
-message GetBlockHeaderByHashResponse {
-    Header header = 1;
-}
-
-message Block {
-    string hash = 1;
-    uint64 number = 9;
-    uint64 timestamp = 12;
-}
-
-message Header {
-    string parent_hash = 1;
-    string uncle_hash = 2;
-    string miner = 3;
-    string root = 4;
-    string tx_hash = 5;
-    string receipt_hash = 6;
-    string bloom = 7;
-    uint64 difficulty = 8;
-    uint64 gas_limit = 9;
-    uint64 gas_used = 10;
-    string extra = 11;
-    string mix_digest = 12;
-    uint64 nonce = 13;
-
-    Block block = 14;
-    string blockHash = 15;
-}
+message Empty {}
