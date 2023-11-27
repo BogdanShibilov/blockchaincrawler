@@ -32,7 +32,7 @@ func NewWithGorm(cfg config.DbNode) (*Pg, error) {
 		return nil, fmt.Errorf("failed to connect to db: %w", err)
 	}
 
-	err = db.AutoMigrate(&entity.Block{}, &entity.Header{})
+	err = db.AutoMigrate(&entity.Block{}, &entity.Header{}, &entity.Transaction{}, &entity.Withdrawal{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to auto migrate: %w", err)
 	}

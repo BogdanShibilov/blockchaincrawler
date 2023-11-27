@@ -2,7 +2,6 @@ package crawler
 
 import (
 	"context"
-	"log"
 
 	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/transport"
 	"github.com/bogdanshibilov/blockchaincrawler/pkg/logger"
@@ -33,11 +32,13 @@ func (s *Service) Run(ctx context.Context) {
 			go s.blockinfo.CreateHeader(context.Background(), header)
 			go c.GetBlockByHash(ctx, header.Hash())
 		case block := <-c.Blocks():
-			log.Printf("Got block with %d transactions\n", len(block.Transactions()))
+			blockHash := block.Hash().Hex()
+			go s.blockinfo.CreateTransactions(ctx, block.Transactions(), blockHash)
+			go s.blockinfo.CreateWithdrawals(ctx, block.Withdrawals(), blockHash)
 		case err := <-c.Errors():
-			log.Printf("Error from channel: %v", err)
+			s.l.Errorf("error from channel: %v", err)
 		case err := <-sub.Err():
-			log.Printf("Error from sub: %v", err)
+			s.l.Errorf("error from subscription: %v", err)
 		}
 	}
 }

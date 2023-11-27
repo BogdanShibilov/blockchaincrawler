@@ -2,6 +2,8 @@ package v1
 
 import (
 	"context"
+	"fmt"
+	"io"
 
 	"go.uber.org/zap"
 
@@ -30,4 +32,26 @@ func (s *Service) CreateHeader(ctx context.Context, req *pb.CreateHeaderRequest)
 	}
 
 	return &pb.Empty{}, nil
+}
+
+func (s *Service) CreateTransaction(stream pb.BlockInfoService_CreateTransactionServer) error {
+	var total int32 = 0
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return stream.SendAndClose(&pb.CreateTransactionResponse{
+				TotalCreated: total,
+			})
+		}
+		if err != nil {
+			return fmt.Errorf("error while streaming tx: %w", err)
+		}
+
+		err = s.usecase.CreateTransaction(context.Background(), req.Transaction, req.BlockHash)
+		if err != nil {
+			return fmt.Errorf("failed to create tx: %w", err)
+		}
+
+		total++
+	}
 }

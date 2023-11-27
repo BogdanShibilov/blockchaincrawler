@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 
+	"github.com/spf13/viper"
+
 	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/app"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/config"
 	"github.com/bogdanshibilov/blockchaincrawler/pkg/logger"
-	"github.com/spf13/viper"
 )
 
 func main() {

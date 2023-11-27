@@ -6,10 +6,30 @@ option go_package = "./;pb";
 
 service BlockInfoService {
     rpc CreateHeader (CreateHeaderRequest) returns (Empty);
+    rpc CreateTransaction (stream CreateTransactionRequest) returns (CreateTransactionResponse);
+    rpc CreateWithdrawal (stream CreateWithdrawalRequest) returns (CreateWithdrawalResponse);
 }
 
 message CreateHeaderRequest {
     bytes headerJson = 1;
+}
+
+message CreateTransactionRequest {
+    string blockHash = 1;
+    bytes transaction = 2;
+}
+
+message CreateTransactionResponse {
+    int32 totalCreated = 1;
+}
+
+message CreateWithdrawalRequest {
+    string blockHash = 1;
+    bytes withdrawal = 2;
+}
+
+message CreateWithdrawalResponse {
+    int32 totalCreated = 1;
 }
 
 message Empty {}
