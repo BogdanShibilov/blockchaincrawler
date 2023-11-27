@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package userservice;
+
+option go_package = "./;pb";
+
+service UserService {
+    rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+    rpc GetUserByEmail (GetUserByEmailRequest) returns (GetUserByEmailResponse);
+    rpc GetUserById (GetUserByIdRequest) returns (GetUserByIdResponse);
+    rpc GetAllUsers (GetAllUsersRequest) returns (GetAllUsersResponse);
+    rpc DeleteUserById (DeleteUserByIdRequest) returns (DeleteUserByIdResponse);
+    rpc ConfirmUser (ConfirmUserRequest) returns (ConfirmUserResponse);
+}
+
+message CreateUserRequest {
+    string email = 1;
+    string hashedPassword = 2;
+}
+
+message CreateUserResponse {
+    string id = 1;
+}
+
+message GetUserByEmailRequest {
+    string email = 1;
+}
+
+message GetUserByEmailResponse {
+    User user = 1;
+}
+
+message GetUserByIdRequest {
+    string id = 1;
+}
+
+message GetUserByIdResponse {
+    User user = 1;
+}
+
+message GetAllUsersRequest {}
+
+message GetAllUsersResponse {
+    repeated User users = 1;
+}
+
+message DeleteUserByIdRequest {
+    string id = 1;
+}
+
+message DeleteUserByIdResponse {}
+
+message ConfirmUserRequest {
+    string email = 1;
+}
+
+message ConfirmUserResponse {}
+
+message User {
+    string id = 1;
+    string email = 2;
+    string hashedPassword = 3;
+    bool is_confirmed = 4;
+}

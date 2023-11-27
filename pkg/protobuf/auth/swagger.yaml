@@ -1,0 +1,21 @@
+openapiOptions:
+  file:
+    - file: "auth.proto"
+      option:
+        info:
+          title: "grpc service for auth"
+          version: "1.0"
+          contact:
+            name: "authservice"
+            url: "https://github.com/name"
+            email: "mail@gmail.com"
+        external_docs:
+          url: "https://github.com/name"
+          description: "grpc service for auth"
+        schemes:
+          - HTTPS
+          - HTTP
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"

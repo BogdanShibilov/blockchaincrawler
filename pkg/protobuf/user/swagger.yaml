@@ -1,0 +1,21 @@
+openapiOptions:
+  file:
+    - file: "user.proto"
+      option:
+        info:
+          title: "CRUD service for user information"
+          version: "1.0"
+          contact:
+            name: "userservice"
+            url: "https://github.com/name"
+            email: "mail@gmail.com"
+        external_docs:
+          url: "https://github.com/name"
+          description: "CRUD service for user information"
+        schemes:
+          - HTTPS
+          - HTTP
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"

@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package authservice;
+
+option go_package = "./;pb";
+
+service AuthService {
+    rpc GenerateJwtToken (GenerateJwtTokenRequest) returns (GenerateJwtTokenResponse);
+    rpc RenewJwtToken (RenewJwtTokenRequest) returns (RenewJwtTokenResponse);
+    rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+    rpc SendConfirmationCode (SendConfirmationCodeRequest) returns (SendConfirmationCodeResponse);
+    rpc ConfirmUser (ConfirmUserRequest) returns (ConfirmUserResponse); 
+}
+
+message GenerateJwtTokenRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message GenerateJwtTokenResponse {
+    string accessToken = 1;
+    string refreshToken = 2;
+}
+
+message RenewJwtTokenRequest {
+    string refreshToken = 1;
+}
+
+message RenewJwtTokenResponse {
+    string accessToken = 1;
+    string refreshToken = 2;
+}
+
+message CreateUserRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message CreateUserResponse {
+    string userId = 1;
+}
+
+message SendConfirmationCodeRequest {
+    string email = 1;
+}
+
+message SendConfirmationCodeResponse {}
+
+message ConfirmUserRequest {
+    string email = 1;
+    string code = 2;
+}
+
+message ConfirmUserResponse {}

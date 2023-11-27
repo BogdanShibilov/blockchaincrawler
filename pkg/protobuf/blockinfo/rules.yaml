@@ -1,0 +1,14 @@
+type: google.api.Service
+config_version: 3
+
+http:
+  rules:
+    - selector: blockinfoservice.BlockInfoService.CreateBlock
+      post: "/grpc/v1/CreateBlock"
+      body: "*"
+    - selector: blockinfo.BlockInfoService.GetBlockByHash
+      post: "/grpc/v1/GetBlockByHash"
+      body: "*"
+    - selector: blockinfoservice.BlockInfoService.GetAllBlocks
+      post: "/grpc/v1/GetAllBlocks"
+      body: "*"
