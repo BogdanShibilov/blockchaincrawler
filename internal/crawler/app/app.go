@@ -2,35 +2,45 @@ package app
 
 import (
 	"context"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/config"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/crawler"
+	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/transport"
+	"github.com/bogdanshibilov/blockchaincrawler/pkg/logger"
 )
 
 type App struct {
 	cfg config.Config
+	l   *logger.SugaredLogger
 }
 
-func New(cfg config.Config) *App {
+func New(cfg config.Config, l *logger.SugaredLogger) *App {
 	return &App{
 		cfg: cfg,
+		l:   l,
 	}
 }
 
 func (a *App) Run() {
+
 	ctx, cancel := context.WithCancel(context.Background())
+
+	blockInfoTransport, err := transport.NewBlockInfo(a.cfg.Transport.BlockInfoTransport)
+	if err != nil {
+		a.l.Panicf("failed to create block info transport: %v", err)
+	}
 
 	c, err := a.createCrawler(ctx)
 	if err != nil {
-		log.Printf("Error while creating crawler: %v\n", err)
+		a.l.Panicf("failed to create crawler: %v", err)
 	}
 	defer c.Close()
 
-	crawlerService := crawler.NewService(c)
+	crawlerService := crawler.NewService(c, a.l, blockInfoTransport)
+	a.l.Infof("Starting crawler")
 	go crawlerService.Run(ctx)
 
 	a.gracefulShutdown(cancel)

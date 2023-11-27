@@ -3,15 +3,22 @@ package crawler
 import (
 	"context"
 	"log"
+
+	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/transport"
+	"github.com/bogdanshibilov/blockchaincrawler/pkg/logger"
 )
 
 type Service struct {
-	crawler Crawler
+	crawler   Crawler
+	l         *logger.SugaredLogger
+	blockinfo *transport.BlockInfo
 }
 
-func NewService(crawler Crawler) *Service {
+func NewService(c Crawler, l *logger.SugaredLogger, bt *transport.BlockInfo) *Service {
 	return &Service{
-		crawler: crawler,
+		crawler:   c,
+		l:         l,
+		blockinfo: bt,
 	}
 }
 
@@ -22,7 +29,8 @@ func (s *Service) Run(ctx context.Context) {
 	for {
 		select {
 		case header := <-c.Headers():
-			log.Printf("Got header with number %v\n", header.Number)
+			s.l.Infof("Received header with number: %v", header.Number)
+			go s.blockinfo.CreateHeader(context.Background(), header)
 			go c.GetBlockByHash(ctx, header.Hash())
 		case block := <-c.Blocks():
 			log.Printf("Got block with %d transactions\n", len(block.Transactions()))

@@ -17,10 +17,10 @@ func New(blocks repository.BlockRepo) UseCase {
 }
 
 func (s *Service) CreateHeader(ctx context.Context, headerJson []byte) error {
-	var gethHeader *types.Header
+	gethHeader := &types.Header{}
 	gethHeader.UnmarshalJSON(headerJson)
 
-	var header *entity.Header
+	header := &entity.Header{}
 	header.From(gethHeader)
 
 	err := s.blocks.CreateBlock(ctx, header.BlockHash)
