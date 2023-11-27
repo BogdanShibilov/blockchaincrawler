@@ -2,69 +2,46 @@ package app
 
 import (
 	"context"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/ethereum/go-ethereum/core/types"
-
 	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/config"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/crawler"
-	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/transport"
-	"github.com/bogdanshibilov/blockchaincrawler/pkg/logger"
 )
 
 type App struct {
-	logger *logger.ZapLogger
-	cfg    *config.Config
+	cfg config.Config
 }
 
-func New(l *logger.ZapLogger, cfg *config.Config) *App {
+func New(cfg config.Config) *App {
 	return &App{
-		logger: l,
-		cfg:    cfg,
+		cfg: cfg,
 	}
 }
 
 func (a *App) Run() {
-	var (
-		l   = a.logger
-		cfg = a.cfg
-	)
+	ctx, cancel := context.WithCancel(context.Background())
 
-	ctx, cancel := context.WithCancel(context.TODO())
-
-	blockInfoTransport, err := transport.NewBlockInfo(cfg.Transport.BlockInfoTransport)
+	c, err := a.createCrawler(ctx)
 	if err != nil {
-		l.Panicf("failed to connect to blockinfo: %v", err)
+		log.Printf("Error while creating crawler: %v\n", err)
 	}
+	defer c.Close()
 
-	blockCrawler, err := crawler.NewCrawler(cfg.ExternalNode.Protocol+"://"+cfg.ExternalNode.Hostname, l, blockInfoTransport)
-	if err != nil {
-		l.Panicf("failed to create a new crawler: %v", err)
-	}
-
-	blocks := make(chan *types.Block)
-	headers := make(chan *types.Header)
-	errCh := make(chan error)
-	sub, err := blockCrawler.Crawl(ctx, blocks, headers, errCh)
-	if err != nil {
-		l.Panicf("failed to crawl: %v", err)
-	}
-	defer sub.Unsubscribe()
-	defer close(blocks)
-	defer close(headers)
-	defer close(errCh)
-	go blockCrawler.WriteBlocks(ctx, blocks, errCh)
-
-	go func() {
-		for err := range errCh {
-			l.Errorf("error occured: %v", err)
-		}
-	}()
+	crawlerService := crawler.NewService(c)
+	go crawlerService.Run(ctx)
 
 	a.gracefulShutdown(cancel)
-	l.Infoln("End")
+}
+
+func (a *App) createCrawler(ctx context.Context) (crawler.Crawler, error) {
+	p := crawler.Protocol(a.cfg.NodeUrl.Protocol)
+	nodeConn := crawler.NewGethConnection(p, a.cfg.NodeUrl.Hostname)
+	crawlerBuilder := crawler.NewGethCrawlerBuilder(*nodeConn)
+	crawlerDirector := crawler.NewDirector(crawlerBuilder)
+	return crawlerDirector.BuildCrawler(ctx)
 }
 
 func (a *App) gracefulShutdown(cancel context.CancelFunc) {
