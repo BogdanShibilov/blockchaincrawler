@@ -84,6 +84,66 @@ func (s *Service) CreateWithdrawal(ctx context.Context, withdrawalJson []byte, b
 }
 
 func (s *Service) GetHeaders(ctx context.Context, page int, pageSize int) (*PagedResult, error) {
+	page, pageSize = validatePagingOptions(page, pageSize)
+
+	pagedHeaders, err := s.blocks.GetHeaders(ctx, page, pageSize)
+	if err != nil {
+		return nil, err
+	}
+
+	headersJson, err := json.Marshal(pagedHeaders.Data)
+	if err != nil {
+		return nil, err
+	}
+
+	return &PagedResult{
+		Data:       headersJson,
+		Page:       int32(page),
+		TotalPages: int32(pagedHeaders.TotalPages),
+	}, nil
+}
+
+func (s *Service) GetTxsByBlockHash(ctx context.Context, hash string, page int, pageSize int) (*PagedResult, error) {
+	page, pageSize = validatePagingOptions(page, pageSize)
+
+	pagedTxs, err := s.blocks.GetTxsByBlockHash(ctx, hash, page, pageSize)
+	if err != nil {
+		return nil, err
+	}
+
+	txsJson, err := json.Marshal(pagedTxs.Data)
+	if err != nil {
+		return nil, err
+	}
+
+	return &PagedResult{
+		Data:       txsJson,
+		Page:       int32(page),
+		TotalPages: int32(pagedTxs.TotalPages),
+	}, nil
+}
+
+func (s *Service) GetWsByBlockHash(ctx context.Context, hash string, page int, pageSize int) (*PagedResult, error) {
+	page, pageSize = validatePagingOptions(page, pageSize)
+
+	pagedWs, err := s.blocks.GetWsByBlockHash(ctx, hash, page, pageSize)
+	if err != nil {
+		return nil, err
+	}
+
+	wsJson, err := json.Marshal(pagedWs.Data)
+	if err != nil {
+		return nil, err
+	}
+
+	return &PagedResult{
+		Data:       wsJson,
+		Page:       int32(page),
+		TotalPages: int32(pagedWs.TotalPages),
+	}, nil
+}
+
+func validatePagingOptions(page int, pageSize int) (int, int) {
 	if page <= 0 {
 		page = 1
 	}
@@ -95,21 +155,5 @@ func (s *Service) GetHeaders(ctx context.Context, page int, pageSize int) (*Page
 		pageSize = 10
 	}
 
-	headers, err := s.blocks.GetHeaders(ctx, page, pageSize)
-	if err != nil {
-		return nil, err
-	}
-
-	headersJson, err := json.Marshal(headers)
-	if err != nil {
-		return nil, err
-	}
-
-	totalPages := s.blocks.GetTotalPagesFor(new(entity.Header), pageSize)
-
-	return &PagedResult{
-		Data:       headersJson,
-		Page:       int32(page),
-		TotalPages: totalPages,
-	}, nil
+	return page, pageSize
 }

@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/config"
-	pb "github.com/bogdanshibilov/blockchaincrawler/pkg/protobuf/blockinfo/gw"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/config"
+	pb "github.com/bogdanshibilov/blockchaincrawler/pkg/protobuf/blockinfo/gw"
 )
 
 type BlockInfo struct {
@@ -38,6 +39,36 @@ func (b *BlockInfo) GetHeaders(ctx context.Context, page int, pageSize int) (*pb
 	}
 
 	res, err := b.client.GetHeaders(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (b *BlockInfo) GetTxsByBlockHash(ctx context.Context, hash string, page int, pageSize int) (*pb.TxsByBlockHashResponse, error) {
+	req := &pb.TxsByBlockHashRequest{
+		BlockHash: hash,
+		Page:      int32(page),
+		PageSize:  int32(pageSize),
+	}
+
+	res, err := b.client.GetTxsByBlockHash(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (b *BlockInfo) GetWsByBlockHash(ctx context.Context, hash string, page int, pageSize int) (*pb.WsByBlockHashResponse, error) {
+	req := &pb.WsByBlockHashRequest{
+		BlockHash: hash,
+		Page:      int32(page),
+		PageSize:  int32(pageSize),
+	}
+
+	res, err := b.client.GetWsByBlockHash(ctx, req)
 	if err != nil {
 		return nil, err
 	}

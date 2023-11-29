@@ -70,3 +70,33 @@ func (s *Service) GetHeaders(ctx context.Context, req *pb.GetHeadersRequest) (*p
 
 	return res, nil
 }
+
+func (s *Service) GetTxsByBlockHash(ctx context.Context, req *pb.TxsByBlockHashRequest) (*pb.TxsByBlockHashResponse, error) {
+	pagedTxs, err := s.usecase.GetTxsByBlockHash(ctx, req.BlockHash, int(req.Page), int(req.PageSize))
+	if err != nil {
+		return nil, err
+	}
+
+	res := &pb.TxsByBlockHashResponse{
+		Txs:        pagedTxs.Data,
+		TotalPages: pagedTxs.TotalPages,
+		Page:       pagedTxs.Page,
+	}
+
+	return res, nil
+}
+
+func (s *Service) GetWsByBlockHash(ctx context.Context, req *pb.WsByBlockHashRequest) (*pb.WsByBlockHashResponse, error) {
+	pagedWs, err := s.usecase.GetWsByBlockHash(ctx, req.BlockHash, int(req.Page), int(req.PageSize))
+	if err != nil {
+		return nil, err
+	}
+
+	res := &pb.WsByBlockHashResponse{
+		Ws:         pagedWs.Data,
+		TotalPages: pagedWs.TotalPages,
+		Page:       pagedWs.Page,
+	}
+
+	return res, nil
+}

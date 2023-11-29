@@ -3,9 +3,10 @@ package v1
 import (
 	"net/http"
 
-	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/apigateway"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+
+	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/apigateway"
 )
 
 type Router struct {

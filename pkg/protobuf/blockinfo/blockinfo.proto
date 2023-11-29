@@ -9,6 +9,8 @@ service BlockInfoService {
     rpc CreateTransaction (stream CreateTransactionRequest) returns (CreateTransactionResponse);
     rpc CreateWithdrawal (stream CreateWithdrawalRequest) returns (CreateWithdrawalResponse);
     rpc GetHeaders (GetHeadersRequest) returns (GetHeadersResponse);
+    rpc GetTxsByBlockHash (TxsByBlockHashRequest) returns (TxsByBlockHashResponse);
+    rpc GetWsByBlockHash (WsByBlockHashRequest) returns (WsByBlockHashResponse);
 }
 
 message CreateHeaderRequest {
@@ -40,6 +42,30 @@ message GetHeadersRequest {
 
 message GetHeadersResponse {
     bytes headers = 1;
+    int32 page = 2;
+    int32 totalPages = 3;
+}
+
+message TxsByBlockHashRequest {
+    string blockHash = 1;
+    int32 page = 2;
+    int32 pageSize = 3;
+}
+
+message TxsByBlockHashResponse {
+    bytes txs = 1;
+    int32 page = 2;
+    int32 totalPages = 3;
+}
+
+message WsByBlockHashRequest {
+    string blockHash = 1;
+    int32 page = 2;
+    int32 pageSize = 3;
+}
+
+message WsByBlockHashResponse {
+    bytes ws = 1;
     int32 page = 2;
     int32 totalPages = 3;
 }

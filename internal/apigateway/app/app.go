@@ -6,13 +6,14 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
+
 	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/apigateway"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/config"
 	v1 "github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/controller/http/v1"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/transport"
 	"github.com/bogdanshibilov/blockchaincrawler/pkg/httpserver"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 type App struct {
