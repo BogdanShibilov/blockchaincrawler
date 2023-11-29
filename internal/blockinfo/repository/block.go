@@ -53,3 +53,12 @@ func (b *Block) CreateWithdrawal(ctx context.Context, w *entity.Withdrawal) erro
 
 	return nil
 }
+
+func (b *Block) GetHeaders(ctx context.Context, page int, pageSize int) (headers []*entity.Header, err error) {
+	res := b.main.DB.WithContext(ctx).Scopes(paginate(page, pageSize)).Find(&headers)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return headers, nil
+}

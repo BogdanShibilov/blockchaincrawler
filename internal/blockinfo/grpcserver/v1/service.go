@@ -55,3 +55,18 @@ func (s *Service) CreateTransaction(stream pb.BlockInfoService_CreateTransaction
 		total++
 	}
 }
+
+func (s *Service) GetHeaders(ctx context.Context, req *pb.GetHeadersRequest) (*pb.GetHeadersResponse, error) {
+	pagedHeaders, err := s.usecase.GetHeaders(ctx, int(req.Page), int(req.PageSize))
+	if err != nil {
+		return nil, err
+	}
+
+	res := &pb.GetHeadersResponse{
+		Headers:    pagedHeaders.Data,
+		TotalPages: pagedHeaders.TotalPages,
+		Page:       pagedHeaders.Page,
+	}
+
+	return res, nil
+}

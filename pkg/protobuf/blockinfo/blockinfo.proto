@@ -8,6 +8,7 @@ service BlockInfoService {
     rpc CreateHeader (CreateHeaderRequest) returns (Empty);
     rpc CreateTransaction (stream CreateTransactionRequest) returns (CreateTransactionResponse);
     rpc CreateWithdrawal (stream CreateWithdrawalRequest) returns (CreateWithdrawalResponse);
+    rpc GetHeaders (GetHeadersRequest) returns (GetHeadersResponse);
 }
 
 message CreateHeaderRequest {
@@ -30,6 +31,17 @@ message CreateWithdrawalRequest {
 
 message CreateWithdrawalResponse {
     int32 totalCreated = 1;
+}
+
+message GetHeadersRequest {
+    int32 page = 1;
+    int32 pageSize = 2;
+}
+
+message GetHeadersResponse {
+    bytes headers = 1;
+    int32 page = 2;
+    int32 totalPages = 3;
 }
 
 message Empty {}

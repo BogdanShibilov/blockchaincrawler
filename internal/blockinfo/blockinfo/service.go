@@ -2,12 +2,19 @@ package blockinfo
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/ethereum/go-ethereum/core/types"
 
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/entity"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/repository"
 )
+
+type PagedResult struct {
+	Data       []byte
+	Page       int32
+	TotalPages int32
+}
 
 type Service struct {
 	blocks repository.BlockRepo
@@ -74,4 +81,35 @@ func (s *Service) CreateWithdrawal(ctx context.Context, withdrawalJson []byte, b
 	}
 
 	return nil
+}
+
+func (s *Service) GetHeaders(ctx context.Context, page int, pageSize int) (*PagedResult, error) {
+	if page <= 0 {
+		page = 1
+	}
+
+	switch {
+	case pageSize > 50:
+		pageSize = 50
+	case pageSize <= 0:
+		pageSize = 10
+	}
+
+	headers, err := s.blocks.GetHeaders(ctx, page, pageSize)
+	if err != nil {
+		return nil, err
+	}
+
+	headersJson, err := json.Marshal(headers)
+	if err != nil {
+		return nil, err
+	}
+
+	totalPages := s.blocks.GetTotalPagesFor(new(entity.Header), pageSize)
+
+	return &PagedResult{
+		Data:       headersJson,
+		Page:       int32(page),
+		TotalPages: totalPages,
+	}, nil
 }
