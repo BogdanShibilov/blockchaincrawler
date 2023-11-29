@@ -1,0 +1,8 @@
+nodeUrl:
+  protocol: "wss"
+  hostname: "ethereum-holesky.publicnode.com"
+
+transport:
+  blockInfoTransport:
+    host: "127.0.0.1"
+    port: "9090"
