@@ -21,7 +21,7 @@ func NewBlockInfo(cfg config.BlockInfoTransport) (*BlockInfo, error) {
 
 	conn, err := grpc.Dial(cfg.Host+":"+cfg.Port, opts...)
 	if err != nil {
-		return nil, fmt.Errorf("failed to dial user grpc server on %v:%v error: %w", cfg.Host, cfg.Port, err)
+		return nil, fmt.Errorf("failed to dial blockinfo grpc server on %v:%v error: %w", cfg.Host, cfg.Port, err)
 	}
 
 	client := pb.NewBlockInfoServiceClient(conn)

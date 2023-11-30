@@ -27,5 +27,6 @@ func (r *Router) Run(handler *gin.Engine) {
 	h := handler.Group("/api/v1")
 	{
 		NewBlockRoutes(h, r.api, r.l)
+		NewAuthRoutes(h, r.api, r.l)
 	}
 }

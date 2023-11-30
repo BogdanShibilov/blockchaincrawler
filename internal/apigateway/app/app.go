@@ -42,7 +42,12 @@ func (a *App) Run() {
 		l.Panicf("failed to create blocks transport: %v", err)
 	}
 
-	api := apigateway.NewApi(blockInfoTransport)
+	authTransport, err := transport.NewAuth(&cfg.Transport.AuthTransport)
+	if err != nil {
+		l.Panicf("failed to create auth transport: %v", err)
+	}
+
+	api := apigateway.NewApi(blockInfoTransport, authTransport)
 
 	handler := gin.Default()
 	router := v1.NewRouter(api, l)
