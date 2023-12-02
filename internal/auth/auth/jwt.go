@@ -70,6 +70,7 @@ func (s *Service) generateAccessToken(user *pb.User) (string, error) {
 	tokenLiveDuration := time.Duration(s.cfg.AccessTokenDuration)
 	claims := &AccessTokenClaims{
 		UserId:      user.Id,
+		Role:        user.Role,
 		UserEmail:   user.Email,
 		IsConfirmed: user.IsConfirmed,
 		RegisteredClaims: jwt.RegisteredClaims{

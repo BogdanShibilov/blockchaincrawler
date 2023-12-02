@@ -8,6 +8,7 @@ import (
 
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/entity"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/repository"
+	pb "github.com/bogdanshibilov/blockchaincrawler/pkg/protobuf/user/gw"
 )
 
 type Service struct {
@@ -81,4 +82,38 @@ func (s *Service) ConfirmUser(ctx context.Context, email string) error {
 	}
 
 	return nil
+}
+
+func (s *Service) UpdateProfile(ctx context.Context, req *pb.UpdateProfileRequest) error {
+	uuid, err := uuid.Parse(req.UserId)
+	if err != nil {
+		return err
+	}
+	profile := &entity.Profile{
+		UserId:  uuid,
+		Name:    req.Profile.Name,
+		Surname: req.Profile.Surname,
+		AboutMe: req.Profile.AboutMe,
+	}
+
+	err = s.repo.CreateOrUpdateProfile(ctx, profile)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Service) GetProfileById(ctx context.Context, id string) (*entity.Profile, error) {
+	uuid, err := uuid.Parse(id)
+	if err != nil {
+		return nil, err
+	}
+
+	profile, err := s.repo.GetProfileById(ctx, uuid)
+	if err != nil {
+		return nil, err
+	}
+
+	return profile, nil
 }

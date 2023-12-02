@@ -11,6 +11,8 @@ service UserService {
     rpc GetAllUsers (GetAllUsersRequest) returns (GetAllUsersResponse);
     rpc DeleteUserById (DeleteUserByIdRequest) returns (DeleteUserByIdResponse);
     rpc ConfirmUser (ConfirmUserRequest) returns (ConfirmUserResponse);
+    rpc UpdateProfile (UpdateProfileRequest) returns (UpdateProfileResponse);
+    rpc GetProfileById (GetProfileByIdRequest) returns (GetProfileByIdResponse);
 }
 
 message CreateUserRequest {
@@ -56,9 +58,31 @@ message ConfirmUserRequest {
 
 message ConfirmUserResponse {}
 
+message UpdateProfileRequest {
+    string userId = 1;
+    Profile profile = 2;
+}
+
+message UpdateProfileResponse {}
+
+message GetProfileByIdRequest {
+    string id = 1;
+}
+
+message GetProfileByIdResponse {
+    Profile profile = 1;
+}
+
 message User {
     string id = 1;
-    string email = 2;
-    string hashedPassword = 3;
-    bool is_confirmed = 4;
+    string role = 2;
+    string email = 3;
+    string hashedPassword = 4;
+    bool is_confirmed = 5;
+}
+
+message Profile {
+    string name = 1;
+    string surname = 2;
+    string aboutMe = 3;
 }

@@ -15,4 +15,6 @@ type UserRepository interface {
 	GetAllUsers(ctx context.Context) (users []*entity.User, err error)
 	UpdateUserById(ctx context.Context, newUser *entity.User) error
 	DeleteUserById(ctx context.Context, id uuid.UUID) error
+	CreateOrUpdateProfile(ctx context.Context, p *entity.Profile) error
+	GetProfileById(ctx context.Context, id uuid.UUID) (p *entity.Profile, err error)
 }

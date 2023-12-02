@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/database/postgres"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/entity"
@@ -18,9 +19,21 @@ func New(db *postgres.Pg) UserRepository {
 	return &User{db}
 }
 func (u *User) CreateUser(ctx context.Context, user *entity.User) (uuid.UUID, error) {
-	res := u.main.DB.WithContext(ctx).Create(user)
-	if res.Error != nil {
-		return uuid.Nil, fmt.Errorf("failed to create user: %w", res.Error)
+	err := u.main.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&user).Error; err != nil {
+			return err
+		}
+		userProfile := &entity.Profile{
+			UserId: user.ID,
+		}
+		if err := tx.Create(&userProfile).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		return uuid.Nil, fmt.Errorf("failed to create user: %w", err)
 	}
 
 	return user.ID, nil
@@ -69,4 +82,22 @@ func (u *User) DeleteUserById(ctx context.Context, id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func (u *User) CreateOrUpdateProfile(ctx context.Context, p *entity.Profile) error {
+	res := u.main.DB.WithContext(ctx).Where("user_id = ?", p.UserId).Save(&p)
+	if res.Error != nil {
+		return res.Error
+	}
+
+	return nil
+}
+
+func (u *User) GetProfileById(ctx context.Context, id uuid.UUID) (p *entity.Profile, err error) {
+	res := u.main.DB.WithContext(ctx).Where("user_id = ?", id).First(&p)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return p, nil
 }

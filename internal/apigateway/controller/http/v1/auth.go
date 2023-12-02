@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/apigateway"
+	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/config"
+	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/controller/http/middleware"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/controller/http/v1/dto"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -12,19 +14,22 @@ import (
 type AuthRoutes struct {
 	api apigateway.UseCase
 	l   *zap.SugaredLogger
+	cfg *config.Config
 }
 
-func NewAuthRoutes(handler *gin.RouterGroup, api apigateway.UseCase, l *zap.SugaredLogger) {
+func NewAuthRoutes(handler *gin.RouterGroup, api apigateway.UseCase, l *zap.SugaredLogger, cfg *config.Config) {
 	r := &AuthRoutes{
 		api: api,
 		l:   l,
+		cfg: cfg,
 	}
 
 	authHandler := handler.Group("/auth")
 	{
 		authHandler.POST("/signin", r.GenerateJwtToken)
-		authHandler.POST("/refreshjwt", r.RenewJwtToken)
 		authHandler.POST("/signup", r.CreateUser)
+		authHandler.Use(middleware.JwtVerify(&r.cfg.Jwt))
+		authHandler.POST("/refreshjwt", r.RenewJwtToken)
 		authHandler.POST("/getconfirmation", r.SendConfirmationCode)
 		authHandler.POST("/confirmuser", r.ConfirmUser)
 	}

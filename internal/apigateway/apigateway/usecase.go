@@ -9,6 +9,7 @@ import (
 type UseCase interface {
 	BlocksUseCase
 	AuthUseCase
+	UserUseCase
 }
 
 type BlocksUseCase interface {
@@ -23,4 +24,11 @@ type AuthUseCase interface {
 	CreateUser(ctx context.Context, creds *dto.UserCreds) (string, error)
 	SendConfirmationCode(ctx context.Context, sendConfReq *dto.SendConfirmCodeRequest) error
 	ConfirmUser(ctx context.Context, confReq *dto.ConfirmUserRequest) error
+}
+
+type UserUseCase interface {
+	GetAllUsers(ctx context.Context) ([]*dto.UserDto, error)
+	DeleteUserById(ctx context.Context, id string) error
+	UpdateProfile(ctx context.Context, id string, p *dto.UserProfileDto) error
+	GetProfileById(ctx context.Context, id string) (*dto.UserProfileDto, error)
 }

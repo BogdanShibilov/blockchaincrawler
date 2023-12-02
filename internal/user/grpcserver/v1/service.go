@@ -74,6 +74,7 @@ func (s *Service) GetUserById(ctx context.Context, req *pb.GetUserByIdRequest) (
 	return &pb.GetUserByIdResponse{
 		User: &pb.User{
 			Id:             user.ID.String(),
+			Role:           string(user.Role),
 			Email:          user.Email,
 			HashedPassword: user.Password,
 			IsConfirmed:    user.IsConfirmed,
@@ -92,6 +93,7 @@ func (s *Service) GetAllUsers(ctx context.Context, req *pb.GetAllUsersRequest) (
 	for _, user := range users {
 		pbUsers = append(pbUsers, &pb.User{
 			Id:             user.ID.String(),
+			Role:           string(user.Role),
 			Email:          user.Email,
 			HashedPassword: user.Password,
 			IsConfirmed:    user.IsConfirmed,
@@ -127,4 +129,30 @@ func (s *Service) ConfirmUser(ctx context.Context, req *pb.ConfirmUserRequest) (
 	}
 
 	return &pb.ConfirmUserResponse{}, nil
+}
+
+func (s *Service) UpdateProfile(ctx context.Context, req *pb.UpdateProfileRequest) (*pb.UpdateProfileResponse, error) {
+	err := s.usecase.UpdateProfile(ctx, req)
+	if err != nil {
+		s.logger.Errorf("failed to update profile: %v", err)
+		return nil, fmt.Errorf("failed to update profile: %v", err)
+	}
+
+	return &pb.UpdateProfileResponse{}, nil
+}
+
+func (s *Service) GetProfileById(ctx context.Context, req *pb.GetProfileByIdRequest) (*pb.GetProfileByIdResponse, error) {
+	profile, err := s.usecase.GetProfileById(ctx, req.Id)
+	if err != nil {
+		s.logger.Errorf("failed to get profile by id: %v", err)
+		return nil, fmt.Errorf("failed to get profile by id: %v", err)
+	}
+
+	return &pb.GetProfileByIdResponse{
+		Profile: &pb.Profile{
+			Name:    profile.Name,
+			Surname: profile.Surname,
+			AboutMe: profile.AboutMe,
+		},
+	}, nil
 }

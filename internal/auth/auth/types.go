@@ -10,6 +10,7 @@ type JwtToken struct {
 type AccessTokenClaims struct {
 	jwt.RegisteredClaims
 	UserId      string `json:"userId"`
+	Role        string `json:"role"`
 	UserEmail   string `json:"userEmail"`
 	IsConfirmed bool   `json:"isConfirmed"`
 }

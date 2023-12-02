@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/entity"
+	pb "github.com/bogdanshibilov/blockchaincrawler/pkg/protobuf/user/gw"
 )
 
 type UseCase interface {
@@ -15,4 +16,6 @@ type UseCase interface {
 	GetAllUsers(ctx context.Context) ([]*entity.User, error)
 	DeleteUserById(ctx context.Context, id uuid.UUID) error
 	ConfirmUser(ctx context.Context, email string) error
+	UpdateProfile(ctx context.Context, req *pb.UpdateProfileRequest) error
+	GetProfileById(ctx context.Context, id string) (*entity.Profile, error)
 }

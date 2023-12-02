@@ -47,10 +47,15 @@ func (a *App) Run() {
 		l.Panicf("failed to create auth transport: %v", err)
 	}
 
-	api := apigateway.NewApi(blockInfoTransport, authTransport)
+	userTransport, err := transport.NewUser(&cfg.Transport.UserTransport)
+	if err != nil {
+		l.Panicf("failed to create user transport: %v", err)
+	}
+
+	api := apigateway.NewApi(blockInfoTransport, authTransport, userTransport)
 
 	handler := gin.Default()
-	router := v1.NewRouter(api, l)
+	router := v1.NewRouter(api, l, cfg)
 	router.Run(handler)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.Http.Port))
 	defer httpServer.Shutdown()
