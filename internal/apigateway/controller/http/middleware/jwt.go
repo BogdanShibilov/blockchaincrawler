@@ -5,9 +5,10 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/config"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+
+	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/config"
 )
 
 func JwtVerify(cfg *config.Jwt) gin.HandlerFunc {

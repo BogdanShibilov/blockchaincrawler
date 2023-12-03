@@ -30,8 +30,8 @@ func NewBlockRoutes(handler *gin.RouterGroup, api apigateway.UseCase, l *zap.Sug
 }
 
 func (r *BlockRoutes) GetHeaders(ctx *gin.Context) {
-	page, _ := strconv.Atoi(ctx.Query("page"))
-	pageSize, _ := strconv.Atoi(ctx.Query("pageSize"))
+	page, _ := strconv.Atoi(ctx.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(ctx.DefaultQuery("pageSize", "10"))
 
 	dto, err := r.api.GetHeaders(ctx, page, pageSize)
 	if err != nil {
@@ -44,9 +44,13 @@ func (r *BlockRoutes) GetHeaders(ctx *gin.Context) {
 }
 
 func (r *BlockRoutes) GetTxsByBlockHash(ctx *gin.Context) {
-	page, _ := strconv.Atoi(ctx.Query("page"))
-	pageSize, _ := strconv.Atoi(ctx.Query("pageSize"))
+	page, _ := strconv.Atoi(ctx.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(ctx.DefaultQuery("pageSize", "10"))
 	blockHash := ctx.Query("hash")
+	if blockHash == "" {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, &gin.H{"message": "specify hash parameter"})
+		return
+	}
 
 	dto, err := r.api.GetTxsByBlockHash(ctx, blockHash, page, pageSize)
 	if err != nil {
@@ -59,9 +63,13 @@ func (r *BlockRoutes) GetTxsByBlockHash(ctx *gin.Context) {
 }
 
 func (r *BlockRoutes) GetWsByBlockHash(ctx *gin.Context) {
-	page, _ := strconv.Atoi(ctx.Query("page"))
-	pageSize, _ := strconv.Atoi(ctx.Query("pageSize"))
+	page, _ := strconv.Atoi(ctx.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(ctx.DefaultQuery("pageSize", "10"))
 	blockHash := ctx.Query("hash")
+	if blockHash == "" {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, &gin.H{"message": "specify hash parameter"})
+		return
+	}
 
 	dto, err := r.api.GetWsByBlockHash(ctx, blockHash, page, pageSize)
 	if err != nil {

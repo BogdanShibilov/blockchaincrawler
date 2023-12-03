@@ -3,12 +3,13 @@ package v1
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
+
 	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/apigateway"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/config"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/controller/http/middleware"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/controller/http/v1/dto"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 type UserRoutes struct {

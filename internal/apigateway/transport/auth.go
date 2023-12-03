@@ -4,11 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
 	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/config"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/controller/http/v1/dto"
 	pb "github.com/bogdanshibilov/blockchaincrawler/pkg/protobuf/auth/gw"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 type Auth struct {

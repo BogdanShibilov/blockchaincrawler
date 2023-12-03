@@ -29,12 +29,27 @@ func (s *Service) Run(ctx context.Context) {
 		select {
 		case header := <-c.Headers():
 			s.l.Infof("Received header with number: %v", header.Number)
-			go s.blockinfo.CreateHeader(context.Background(), header)
+			go func() {
+				err := s.blockinfo.CreateHeader(context.Background(), header)
+				if err != nil {
+					s.l.Errorf("failed to create header: %v", err)
+				}
+			}()
 			go c.GetBlockByHash(ctx, header.Hash())
 		case block := <-c.Blocks():
 			blockHash := block.Hash().Hex()
-			go s.blockinfo.CreateTransactions(ctx, block.Transactions(), blockHash)
-			go s.blockinfo.CreateWithdrawals(ctx, block.Withdrawals(), blockHash)
+			go func() {
+				err := s.blockinfo.CreateTransactions(ctx, block.Transactions(), blockHash)
+				if err != nil {
+					s.l.Errorf("failed to create transactions: %v", err)
+				}
+			}()
+			go func() {
+				err := s.blockinfo.CreateWithdrawals(ctx, block.Withdrawals(), blockHash)
+				if err != nil {
+					s.l.Errorf("failed to create withdrawals: %v", err)
+				}
+			}()
 		case err := <-c.Errors():
 			s.l.Errorf("error from channel: %v", err)
 		case err := <-sub.Err():

@@ -54,11 +54,16 @@ func (a *App) Run() {
 
 	api := apigateway.NewApi(blockInfoTransport, authTransport, userTransport)
 
-	handler := gin.Default()
+	handler := gin.New()
 	router := v1.NewRouter(api, l, cfg)
 	router.Run(handler)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.Http.Port))
-	defer httpServer.Shutdown()
+	defer func() {
+		err := httpServer.Shutdown()
+		if err != nil {
+			l.Errorf("failed to shutdown server: %v", err)
+		}
+	}()
 
 	a.gracefulShutdown(cancel)
 }
