@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"go.uber.org/zap"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/config"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/database/postgres"
 	v1 "github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/grpcserver/v1"
+	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/inmemorystorage"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/repository"
 )
 
@@ -49,7 +51,9 @@ func (a *App) Run() {
 	}()
 
 	blockRepo := repository.NewBlock(mainDb)
-	blockUseCase := blockinfo.New(blockRepo)
+	inmem := inmemorystorage.NewInMem(blockRepo, l)
+	go inmem.Run(time.Minute)
+	blockUseCase := blockinfo.New(blockRepo, inmem)
 
 	l.Infof("Starting server on port %v", cfg.Server.Port)
 	grpcService := v1.NewService(blockUseCase, l)

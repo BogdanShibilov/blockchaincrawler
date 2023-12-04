@@ -41,6 +41,12 @@ const docTemplate = `{
                     "200": {
                         "description": "OK"
                     },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
                     "500": {
                         "description": "Internal Server Error"
                     }
@@ -69,6 +75,12 @@ const docTemplate = `{
                 "responses": {
                     "204": {
                         "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -113,6 +125,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             }
@@ -154,6 +172,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -301,6 +325,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/block/recent": {
+            "get": {
+                "description": "Returns array of recently discovered blocks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "block"
+                ],
+                "summary": "Get recent blocks",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.BlockDto"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/block/transaction/{blockhash}": {
             "get": {
                 "description": "Returns paginated list of transactions",
@@ -394,8 +444,11 @@ const docTemplate = `{
                     "200": {
                         "description": "OK"
                     },
-                    "400": {
-                        "description": "Bad Request"
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -439,6 +492,12 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request"
                     },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
                     "500": {
                         "description": "Internal Server Error"
                     }
@@ -447,10 +506,89 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "big.Int": {
+            "type": "object"
+        },
+        "dto.BlockDto": {
+            "type": "object",
+            "properties": {
+                "hash": {
+                    "type": "string"
+                },
+                "header": {
+                    "$ref": "#/definitions/dto.HeaderDTO"
+                },
+                "transactions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.TxDto"
+                    }
+                },
+                "withdrawals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.WithdrawalDto"
+                    }
+                }
+            }
+        },
         "dto.ConfirmUserRequest": {
             "type": "object",
             "properties": {
                 "code": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.HeaderDTO": {
+            "type": "object",
+            "properties": {
+                "blockHash": {
+                    "type": "string"
+                },
+                "difficulty": {
+                    "$ref": "#/definitions/big.Int"
+                },
+                "extraData": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "gasLimit": {
+                    "type": "integer"
+                },
+                "gasUsed": {
+                    "type": "integer"
+                },
+                "miner": {
+                    "type": "string"
+                },
+                "mixHash": {
+                    "type": "string"
+                },
+                "nonce": {
+                    "type": "integer"
+                },
+                "number": {
+                    "$ref": "#/definitions/big.Int"
+                },
+                "parentHash": {
+                    "type": "string"
+                },
+                "receiptsRoot": {
+                    "type": "string"
+                },
+                "sha3Uncles": {
+                    "type": "string"
+                },
+                "stateRoot": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "integer"
+                },
+                "transactionsRoot": {
                     "type": "string"
                 }
             }
@@ -494,6 +632,53 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.TxDto": {
+            "type": "object",
+            "properties": {
+                "blockHash": {
+                    "type": "string"
+                },
+                "chainId": {
+                    "$ref": "#/definitions/big.Int"
+                },
+                "gas": {
+                    "type": "integer"
+                },
+                "gasPrice": {
+                    "$ref": "#/definitions/big.Int"
+                },
+                "hash": {
+                    "type": "string"
+                },
+                "input": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "maxFeePerGas": {
+                    "$ref": "#/definitions/big.Int"
+                },
+                "nonce": {
+                    "type": "integer"
+                },
+                "r": {
+                    "$ref": "#/definitions/big.Int"
+                },
+                "s": {
+                    "$ref": "#/definitions/big.Int"
+                },
+                "to": {
+                    "type": "string"
+                },
+                "v": {
+                    "$ref": "#/definitions/big.Int"
+                },
+                "value": {
+                    "$ref": "#/definitions/big.Int"
+                }
+            }
+        },
         "dto.UserCreds": {
             "type": "object",
             "properties": {
@@ -516,6 +701,23 @@ const docTemplate = `{
                 },
                 "surname": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.WithdrawalDto": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "integer"
+                },
+                "blockHash": {
+                    "type": "string"
+                },
+                "validatorIndex": {
+                    "type": "integer"
                 }
             }
         }

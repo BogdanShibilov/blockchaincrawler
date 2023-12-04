@@ -4,7 +4,7 @@ TOOLS_BIN = $(TOOLS)/bin
 
 .PHONY: generate-swagger-api
 generate-swagger-api:
-	swag init -g router.go -d ./internal//apigateway/controller/http/v1/ 
+	swag init -g router.go -d ./internal//apigateway/controller/http/v1/ --parseInternal --parseDependency
 
 .PHONY: fix-lint
 fix-lint: $(TOOLS_BIN)/golangci-lint

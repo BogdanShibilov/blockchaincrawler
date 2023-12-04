@@ -4,9 +4,10 @@ import (
 	"context"
 	"math"
 
+	"gorm.io/gorm"
+
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/database/postgres"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/entity"
-	"gorm.io/gorm"
 )
 
 type Block struct {

@@ -7,6 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/entity"
+	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/inmemorystorage"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/repository"
 )
 
@@ -18,10 +19,11 @@ type PagedResult struct {
 
 type Service struct {
 	blocks repository.BlockRepo
+	inmem  *inmemorystorage.InMemoryStorage
 }
 
-func New(blocks repository.BlockRepo) UseCase {
-	return &Service{blocks: blocks}
+func New(blocks repository.BlockRepo, inmem *inmemorystorage.InMemoryStorage) UseCase {
+	return &Service{blocks: blocks, inmem: inmem}
 }
 
 func (s *Service) CreateHeader(ctx context.Context, headerJson []byte) error {
@@ -142,10 +144,11 @@ func (s *Service) GetLastNBlocks(ctx context.Context, count int) ([]byte, error)
 		count = 20
 	}
 
-	blocks, err := s.blocks.GetLastNBlocks(ctx, count)
-	if err != nil {
-		return nil, err
-	}
+	// blocks, err := s.blocks.GetLastNBlocks(ctx, count)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	blocks := s.inmem.GetData()
 	jsonBlocks, err := json.Marshal(blocks)
 	if err != nil {
 		return nil, err

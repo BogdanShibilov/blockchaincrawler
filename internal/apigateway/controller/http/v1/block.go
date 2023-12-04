@@ -11,11 +11,15 @@ import (
 )
 
 type BlockRoutes struct {
-	api apigateway.UseCase
+	api apigateway.BlocksUseCase
 	l   *zap.SugaredLogger
 }
 
-func NewBlockRoutes(handler *gin.RouterGroup, api apigateway.UseCase, l *zap.SugaredLogger) {
+func NewBlockRoutes(handler *gin.RouterGroup,
+	api apigateway.BlocksUseCase,
+	l *zap.SugaredLogger,
+) {
+
 	r := &BlockRoutes{
 		api: api,
 		l:   l,
@@ -110,12 +114,20 @@ func (r *BlockRoutes) GetWsByBlockHash(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dto)
 }
 
+// GetLastBlocks godoc
+// @Summary Get recent blocks
+// @Description Returns array of recently discovered blocks
+// @Tags block
+// @Produce json
+// @Success 200 {array} dto.BlockDto
+// @Failure 500
+// @Router /block/recent [get]
 func (r *BlockRoutes) GetLastBlocks(ctx *gin.Context) {
-	dto, err := r.api.GetLastNBlocks(ctx, 20)
+	blocks, err := r.api.GetLastNBlocks(ctx, 20)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, "failed to get most recent blocks")
 		return
 	}
 
-	ctx.JSON(http.StatusOK, dto)
+	ctx.JSON(http.StatusOK, blocks)
 }

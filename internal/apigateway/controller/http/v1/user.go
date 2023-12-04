@@ -13,12 +13,12 @@ import (
 )
 
 type UserRoutes struct {
-	api apigateway.UseCase
+	api apigateway.UserUseCase
 	l   *zap.SugaredLogger
 	cfg *config.Config
 }
 
-func NewUserRoutes(handler *gin.RouterGroup, api apigateway.UseCase, l *zap.SugaredLogger, cfg *config.Config) {
+func NewUserRoutes(handler *gin.RouterGroup, api apigateway.UserUseCase, l *zap.SugaredLogger, cfg *config.Config) {
 	r := &UserRoutes{
 		api: api,
 		l:   l,
