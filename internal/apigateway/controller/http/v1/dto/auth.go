@@ -19,6 +19,5 @@ type SendConfirmCodeRequest struct {
 }
 
 type ConfirmUserRequest struct {
-	Email string `json:"email"`
-	Code  string `json:"code"`
+	Code string `json:"code"`
 }

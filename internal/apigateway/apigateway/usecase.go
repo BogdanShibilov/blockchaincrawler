@@ -23,7 +23,7 @@ type AuthUseCase interface {
 	RenewJwtToken(ctx context.Context, refToken *dto.RenewTokenRequest) (*dto.JwtToken, error)
 	CreateUser(ctx context.Context, creds *dto.UserCreds) (string, error)
 	SendConfirmationCode(ctx context.Context, sendConfReq *dto.SendConfirmCodeRequest) error
-	ConfirmUser(ctx context.Context, confReq *dto.ConfirmUserRequest) error
+	ConfirmUser(ctx context.Context, email string, code string) error
 }
 
 type UserUseCase interface {

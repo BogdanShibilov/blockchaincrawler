@@ -29,13 +29,24 @@ func NewAuthRoutes(handler *gin.RouterGroup, api apigateway.UseCase, l *zap.Suga
 	{
 		authHandler.POST("/signin", r.GenerateJwtToken)
 		authHandler.POST("/signup", r.CreateUser)
-		authHandler.Use(middleware.JwtVerify(&r.cfg.Jwt))
 		authHandler.POST("/refreshjwt", r.RenewJwtToken)
+		authHandler.Use(middleware.JwtVerify(&r.cfg.Jwt))
 		authHandler.POST("/getconfirmation", r.SendConfirmationCode)
 		authHandler.POST("/confirmuser", r.ConfirmUser)
 	}
 }
 
+// GenerateJwtToken godoc
+// @Summary Generates jwt token
+// @Description Returns jwt token which contains access and refresh tokens
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param credentials body dto.UserCreds true "Email and password of account"
+// @Success 200 {object} dto.JwtToken
+// @Failure 400
+// @Failure 500
+// @Router /auth/signin [post]
 func (r *AuthRoutes) GenerateJwtToken(ctx *gin.Context) {
 	var userCreds *dto.UserCreds
 	err := ctx.ShouldBindJSON(&userCreds)
@@ -55,6 +66,17 @@ func (r *AuthRoutes) GenerateJwtToken(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, jwtToken)
 }
 
+// RenewJwtToken godoc
+// @Summary Refreshes jwt token
+// @Description Returns new jwt token which contains access and refresh tokens
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param refreshToken body dto.RenewTokenRequest true "Contains refresh token string"
+// @Success 200 {object} dto.JwtToken
+// @Failure 400
+// @Failure 500
+// @Router /auth/refreshjwt [post]
 func (r *AuthRoutes) RenewJwtToken(ctx *gin.Context) {
 	var renewReq *dto.RenewTokenRequest
 	err := ctx.ShouldBindJSON(&renewReq)
@@ -74,6 +96,17 @@ func (r *AuthRoutes) RenewJwtToken(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, jwtToken)
 }
 
+// CreateUser godoc
+// @Summary Signs up
+// @Description Create a new user in user database with given credentials
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param credentials body dto.UserCreds true "Email and password of account"
+// @Success 200
+// @Failure 400
+// @Failure 500
+// @Router /auth/signup [post]
 func (r *AuthRoutes) CreateUser(ctx *gin.Context) {
 	var userCreds *dto.UserCreds
 	err := ctx.ShouldBindJSON(&userCreds)
@@ -93,6 +126,20 @@ func (r *AuthRoutes) CreateUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, &gin.H{"message": "Successfully signed up"})
 }
 
+// SendConfirmationCode godoc
+// @Summary Sends code
+// @Description Sends code which can be used to confirm user account
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param email body dto.SendConfirmCodeRequest true "Email where code would be sent"
+// @Param Authorization header string true "Bearer token"
+// @Success 200
+// @Failure 400
+// @Failure 401
+// @Failure 403
+// @Failure 500
+// @Router /auth/getconfirmation [post]
 func (r *AuthRoutes) SendConfirmationCode(ctx *gin.Context) {
 	var sendConfReq *dto.SendConfirmCodeRequest
 	err := ctx.ShouldBindJSON(&sendConfReq)
@@ -109,9 +156,22 @@ func (r *AuthRoutes) SendConfirmationCode(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, &gin.H{"message": "Successfully sent code"})
+	ctx.JSON(http.StatusOK, "Successfully sent code")
 }
 
+// ConfirmUser godoc
+// @Summary Confrims user account
+// @Description Tries to confirm user account with given code
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param code body dto.ConfirmUserRequest true "Code used to confirm user"
+// @Param Authorization header string true "Bearer token"
+// @Success 200
+// @Failure 400
+// @Failure 401
+// @Failure 403
+// @Router /auth/confirmuser [post]
 func (r *AuthRoutes) ConfirmUser(ctx *gin.Context) {
 	var confReq *dto.ConfirmUserRequest
 	err := ctx.ShouldBindJSON(&confReq)
@@ -120,8 +180,9 @@ func (r *AuthRoutes) ConfirmUser(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, "bad json was given")
 		return
 	}
+	userEmail := ctx.Keys["userEmail"].(string)
 
-	err = r.api.ConfirmUser(ctx, confReq)
+	err = r.api.ConfirmUser(ctx, userEmail, confReq.Code)
 	if err != nil {
 		r.l.Errorf("failed to confirm user: %v", err)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, "failed to confirm user")

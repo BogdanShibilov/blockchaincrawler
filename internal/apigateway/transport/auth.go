@@ -94,10 +94,10 @@ func (a *Auth) SendConfirmationCode(ctx context.Context, sendConfReq *dto.SendCo
 	return nil
 }
 
-func (a *Auth) ConfirmUser(ctx context.Context, confReq *dto.ConfirmUserRequest) error {
+func (a *Auth) ConfirmUser(ctx context.Context, email string, code string) error {
 	req := &pb.ConfirmUserRequest{
-		Email: confReq.Email,
-		Code:  confReq.Code,
+		Email: email,
+		Code:  code,
 	}
 
 	res, err := a.client.ConfirmUser(ctx, req)

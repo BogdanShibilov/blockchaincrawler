@@ -1,3 +1,23 @@
+// User-service API.
+//
+//	Schemes: https, http
+//	Host: localhost:8080
+//	BasePath: /api/v1
+//	Version: 0.0.1
+//
+//	Consumes:
+//	- application/json
+//
+//	Produces:
+//	- application/json
+//
+//	SecurityDefinitions:
+//	  Bearer:
+//	    type: apiKey
+//	    name: Authorization
+//	    in: header
+//
+// swagger:meta
 package main
 
 import (

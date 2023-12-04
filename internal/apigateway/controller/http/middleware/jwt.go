@@ -54,7 +54,7 @@ func JwtVerify(cfg *config.Jwt) gin.HandlerFunc {
 	}
 }
 
-// Always must be after verify VerifyJwt
+// Always must be after VerifyJwt
 func AdminOnly() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		role := ctx.Keys["role"]

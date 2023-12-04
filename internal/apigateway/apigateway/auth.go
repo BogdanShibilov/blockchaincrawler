@@ -22,6 +22,6 @@ func (a *ApiGateway) SendConfirmationCode(ctx context.Context, sendConfReq *dto.
 	return a.auth.SendConfirmationCode(ctx, sendConfReq)
 }
 
-func (a *ApiGateway) ConfirmUser(ctx context.Context, confReq *dto.ConfirmUserRequest) error {
-	return a.auth.ConfirmUser(ctx, confReq)
+func (a *ApiGateway) ConfirmUser(ctx context.Context, email string, code string) error {
+	return a.auth.ConfirmUser(ctx, email, code)
 }

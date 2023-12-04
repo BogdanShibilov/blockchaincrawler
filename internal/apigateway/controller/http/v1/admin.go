@@ -29,10 +29,21 @@ func NewAdminRoutes(handler *gin.RouterGroup, api apigateway.UseCase, l *zap.Sug
 		adminHandler.Use(middleware.JwtVerify(&cfg.Jwt))
 		adminHandler.Use(middleware.AdminOnly())
 		adminHandler.GET("/user", r.GetAllUsers)
-		adminHandler.DELETE("/user", r.DeleteUserById)
+		adminHandler.DELETE("/user/:id", r.DeleteUserById)
 	}
 }
 
+// GetAllUsers godoc
+// @Summary Gets all users
+// @Description Returns your all users' data. Admin only
+// @Tags admin
+// @Produce json
+// @Param Authorization header string true "Bearer token"
+// @Success 200
+// @Failure 401
+// @Failure 403
+// @Failure 500
+// @Router /admin/user [get]
 func (r *AdminRoutes) GetAllUsers(ctx *gin.Context) {
 	users, err := r.api.GetAllUsers(ctx)
 	if err != nil {
@@ -44,8 +55,19 @@ func (r *AdminRoutes) GetAllUsers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, users)
 }
 
+// DeleteUserById godoc
+// @Summary Delete user by id
+// @Description Deletes user with given id
+// @Tags admin
+// @Produce json
+// @Param Authorization header string true "Bearer token"
+// @Success 204
+// @Failure 401
+// @Failure 403
+// @Failure 500
+// @Router /admin/user/{id} [delete]
 func (r *AdminRoutes) DeleteUserById(ctx *gin.Context) {
-	id := ctx.Query("id")
+	id := ctx.Param("id")
 	err := r.api.DeleteUserById(ctx, id)
 	if err != nil {
 		r.l.Errorf("failed to get delete user: %v", err)

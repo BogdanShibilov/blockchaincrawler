@@ -33,6 +33,20 @@ func NewUserRoutes(handler *gin.RouterGroup, api apigateway.UseCase, l *zap.Suga
 	}
 }
 
+// UpdateProfile godoc
+// @Summary Updates profile
+// @Description Updates your profile with given profile data
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param profile body dto.UserProfileDto true "Your profile data"
+// @Param Authorization header string true "Bearer token"
+// @Success 200
+// @Failure 400
+// @Failure 401
+// @Failure 403
+// @Failure 500
+// @Router /user/profile [put]
 func (u *UserRoutes) UpdateProfile(ctx *gin.Context) {
 	var newProfile *dto.UserProfileDto
 	err := ctx.ShouldBindJSON(&newProfile)
@@ -53,6 +67,17 @@ func (u *UserRoutes) UpdateProfile(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
+// GetProfile godoc
+// @Summary Gets your profile
+// @Description Returns your profile data
+// @Tags user
+// @Produce json
+// @Param Authorization header string true "Bearer token"
+// @Success 200
+// @Failure 401
+// @Failure 403
+// @Failure 500
+// @Router /user/profile [get]
 func (u *UserRoutes) GetProfile(ctx *gin.Context) {
 	id := ctx.Keys["userId"].(string)
 

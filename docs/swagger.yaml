@@ -1,0 +1,338 @@
+basePath: /api/v1
+definitions:
+  dto.ConfirmUserRequest:
+    properties:
+      code:
+        type: string
+    type: object
+  dto.JwtToken:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+    type: object
+  dto.PagedDto:
+    properties:
+      page:
+        type: integer
+      totalPages:
+        type: integer
+      value: {}
+    type: object
+  dto.RenewTokenRequest:
+    properties:
+      refreshToken:
+        type: string
+    type: object
+  dto.SendConfirmCodeRequest:
+    properties:
+      email:
+        type: string
+    type: object
+  dto.UserCreds:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.UserProfileDto:
+    properties:
+      aboutMe:
+        type: string
+      name:
+        type: string
+      surname:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: bogdanshibilov@gmail.com
+    name: Bogdan Shibilov
+  description: Allows to get crawled information about blockchain blocks
+  title: Blockchain crawler api
+  version: "1.0"
+paths:
+  /admin/user:
+    get:
+      description: Returns your all users' data. Admin only
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Gets all users
+      tags:
+      - admin
+  /admin/user/{id}:
+    delete:
+      description: Deletes user with given id
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+      summary: Delete user by id
+      tags:
+      - admin
+  /auth/confirmuser:
+    post:
+      consumes:
+      - application/json
+      description: Tries to confirm user account with given code
+      parameters:
+      - description: Code used to confirm user
+        in: body
+        name: code
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ConfirmUserRequest'
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Confrims user account
+      tags:
+      - auth
+  /auth/getconfirmation:
+    post:
+      consumes:
+      - application/json
+      description: Sends code which can be used to confirm user account
+      parameters:
+      - description: Email where code would be sent
+        in: body
+        name: email
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SendConfirmCodeRequest'
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Sends code
+      tags:
+      - auth
+  /auth/refreshjwt:
+    post:
+      consumes:
+      - application/json
+      description: Returns new jwt token which contains access and refresh tokens
+      parameters:
+      - description: Contains refresh token string
+        in: body
+        name: refreshToken
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RenewTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.JwtToken'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Refreshes jwt token
+      tags:
+      - auth
+  /auth/signin:
+    post:
+      consumes:
+      - application/json
+      description: Returns jwt token which contains access and refresh tokens
+      parameters:
+      - description: Email and password of account
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserCreds'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.JwtToken'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Generates jwt token
+      tags:
+      - auth
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user in user database with given credentials
+      parameters:
+      - description: Email and password of account
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserCreds'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Signs up
+      tags:
+      - auth
+  /block/header:
+    get:
+      description: Returns paginated list of block headers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PagedDto'
+        "500":
+          description: Internal Server Error
+      summary: Get headers array
+      tags:
+      - block
+  /block/transaction/{blockhash}:
+    get:
+      description: Returns paginated list of transactions
+      parameters:
+      - description: looks up txs by this hash
+        in: path
+        name: blockhash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PagedDto'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Get transactions array
+      tags:
+      - block
+  /block/withdrawal/{blockhash}:
+    get:
+      description: Returns paginated list of withdrawals
+      parameters:
+      - description: looks up withdrawals by this hash
+        in: path
+        name: blockhash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PagedDto'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Get withdrawals array
+      tags:
+      - block
+  /user/profile:
+    get:
+      description: Returns your profile data
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Gets your profile
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: Updates your profile with given profile data
+      parameters:
+      - description: Your profile data
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserProfileDto'
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Updates profile
+      tags:
+      - user
+swagger: "2.0"
