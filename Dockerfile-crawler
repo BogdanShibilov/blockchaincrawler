@@ -1,0 +1,9 @@
+FROM golang:1.21 as crawler
+
+WORKDIR /app
+
+COPY .. .
+RUN go mod download
+RUN go build ./cmd/crawler/main.go
+
+CMD ["go", "run", "./cmd/crawler/main.go"]

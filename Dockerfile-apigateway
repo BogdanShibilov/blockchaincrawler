@@ -1,0 +1,11 @@
+FROM golang:1.21 as apigateway
+
+WORKDIR /app
+
+EXPOSE 8080
+
+COPY .. .
+RUN go mod download
+RUN go build ./cmd/apigateway/main.go
+
+CMD ["go", "run", "./cmd/apigateway/main.go"]

@@ -1,0 +1,11 @@
+FROM golang:1.21 as auth
+
+WORKDIR /app
+
+EXPOSE 9095
+
+COPY .. .
+RUN go mod download
+RUN go build ./cmd/auth/main.go
+
+CMD ["go", "run", "./cmd/auth/main.go"]

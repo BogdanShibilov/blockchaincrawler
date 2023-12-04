@@ -2,13 +2,13 @@
 TOOLS = ./tools
 TOOLS_BIN = $(TOOLS)/bin
 
-.PHONY: generate-swagger-api
 generate-swagger-api:
 	swag init -g router.go -d ./internal//apigateway/controller/http/v1/ --parseInternal --parseDependency
+.PHONY: generate-swagger-api
 
-.PHONY: fix-lint
 fix-lint: $(TOOLS_BIN)/golangci-lint
 	$(TOOLS_BIN)/golangci-lint run --fix
+.PHONY: fix-lint
 
 imports: $(TOOLS_BIN)/goimports
 	$(TOOLS_BIN)/goimports -local "github.com/bogdanshibilov/blockchaincrawler" -w ./internal ./cmd
@@ -26,3 +26,22 @@ $(TOOLS_BIN)/goimports:
 	mkdir -p $(TOOLS_BIN)
 	go install golang.org/x/tools/cmd/goimports@latest
 
+generate-dockerimage-apigateway:
+	docker build -t apigateway -f Dockerfile-apigateway .
+.PHONY: generate-dockerimage-apigateway
+
+generate-dockerimage-auth:
+	docker build -t auth -f Dockerfile-auth .
+.PHONY: generate-dockerimage-auth
+
+generate-dockerimage-blockinfo:
+	docker build -t blockinfo -f Dockerfile-blockinfo .
+.PHONY: generate-dockerimage-blockinfo
+
+generate-dockerimage-crawler:
+	docker build -t crawler -f Dockerfile-crawler .
+.PHONY: generate-dockerimage-crawler
+
+generate-dockerimage-user:
+	docker build -t user -f Dockerfile-user .
+.PHONY: generate-dockerimage-user

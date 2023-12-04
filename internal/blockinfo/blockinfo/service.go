@@ -140,14 +140,6 @@ func (s *Service) GetWsByBlockHash(ctx context.Context, hash string, page int, p
 	}, nil
 }
 func (s *Service) GetLastNBlocks(ctx context.Context, count int) ([]byte, error) {
-	if count <= 0 || count > 20 {
-		count = 20
-	}
-
-	// blocks, err := s.blocks.GetLastNBlocks(ctx, count)
-	// if err != nil {
-	// 	return nil, err
-	// }
 	blocks := s.inmem.GetData()
 	jsonBlocks, err := json.Marshal(blocks)
 	if err != nil {

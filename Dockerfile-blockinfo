@@ -1,0 +1,11 @@
+FROM golang:1.21 as blockinfo
+
+WORKDIR /app
+
+EXPOSE 9096
+
+COPY .. .
+RUN go mod download
+RUN go build ./cmd/blockinfo/main.go
+
+CMD ["go", "run", "./cmd/blockinfo/main.go"]
