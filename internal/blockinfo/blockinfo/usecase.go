@@ -11,4 +11,5 @@ type UseCase interface {
 	GetHeaders(ctx context.Context, page int, pageSize int) (*PagedResult, error)
 	GetTxsByBlockHash(ctx context.Context, hash string, page int, pageSize int) (*PagedResult, error)
 	GetWsByBlockHash(ctx context.Context, hash string, page int, pageSize int) (*PagedResult, error)
+	GetLastNBlocks(ctx context.Context, count int) ([]byte, error)
 }

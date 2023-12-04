@@ -11,6 +11,7 @@ service BlockInfoService {
     rpc GetHeaders (GetHeadersRequest) returns (GetHeadersResponse);
     rpc GetTxsByBlockHash (TxsByBlockHashRequest) returns (TxsByBlockHashResponse);
     rpc GetWsByBlockHash (WsByBlockHashRequest) returns (WsByBlockHashResponse);
+    rpc GetLastNBlocks (GetLastNBlocksRequest) returns (GetLastNBlocksResponse);
 }
 
 message CreateHeaderRequest {
@@ -68,6 +69,14 @@ message WsByBlockHashResponse {
     bytes ws = 1;
     int32 page = 2;
     int32 totalPages = 3;
+}
+
+message GetLastNBlocksRequest {
+    int32 count = 1;
+}
+
+message GetLastNBlocksResponse {
+    bytes blocks = 1;
 }
 
 message Empty {}

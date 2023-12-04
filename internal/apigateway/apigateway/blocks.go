@@ -63,3 +63,18 @@ func (a *ApiGateway) GetWsByBlockHash(ctx context.Context, hash string, page int
 		Value:      ws,
 	}, nil
 }
+
+func (a *ApiGateway) GetLastNBlocks(ctx context.Context, count int) ([]*dto.BlockDto, error) {
+	res, err := a.blocks.GetLastNBlocks(ctx, count)
+	if err != nil {
+		return nil, err
+	}
+
+	var blocks []*dto.BlockDto
+	err = json.Unmarshal(res.Blocks, &blocks)
+	if err != nil {
+		return nil, err
+	}
+
+	return blocks, nil
+}

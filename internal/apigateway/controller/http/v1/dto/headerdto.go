@@ -7,6 +7,13 @@ import (
 	"github.com/jackc/pgtype"
 )
 
+type BlockDto struct {
+	Hash         string           `json:"hash"`
+	Header       *HeaderDTO       `json:"header"`
+	Transactions []*TxDto         `json:"transactions"`
+	Withdrawals  []*WithdrawalDto `json:"withdrawals"`
+}
+
 type HeaderDTO struct {
 	BlockHash   string   `json:"blockHash"`
 	ParentHash  string   `json:"parentHash"`

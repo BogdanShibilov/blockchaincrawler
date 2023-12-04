@@ -34,11 +34,6 @@ func (s *Service) CreateHeader(ctx context.Context, headerJson []byte) error {
 	header := new(entity.Header)
 	header.From(gethHeader)
 
-	err = s.blocks.CreateBlock(ctx, header.BlockHash)
-	if err != nil {
-		return err
-	}
-
 	err = s.blocks.CreateHeader(ctx, header)
 	if err != nil {
 		return err
@@ -141,6 +136,22 @@ func (s *Service) GetWsByBlockHash(ctx context.Context, hash string, page int, p
 		Page:       int32(page),
 		TotalPages: int32(pagedWs.TotalPages),
 	}, nil
+}
+func (s *Service) GetLastNBlocks(ctx context.Context, count int) ([]byte, error) {
+	if count <= 0 || count > 20 {
+		count = 20
+	}
+
+	blocks, err := s.blocks.GetLastNBlocks(ctx, count)
+	if err != nil {
+		return nil, err
+	}
+	jsonBlocks, err := json.Marshal(blocks)
+	if err != nil {
+		return nil, err
+	}
+
+	return jsonBlocks, nil
 }
 
 func validatePagingOptions(page int, pageSize int) (int, int) {

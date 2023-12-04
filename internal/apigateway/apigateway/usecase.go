@@ -16,6 +16,7 @@ type BlocksUseCase interface {
 	GetHeaders(ctx context.Context, page int, pageSize int) (*dto.PagedDto, error)
 	GetTxsByBlockHash(ctx context.Context, hash string, page int, pageSize int) (*dto.PagedDto, error)
 	GetWsByBlockHash(ctx context.Context, hash string, page int, pageSize int) (*dto.PagedDto, error)
+	GetLastNBlocks(ctx context.Context, count int) ([]*dto.BlockDto, error)
 }
 
 type AuthUseCase interface {

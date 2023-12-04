@@ -113,7 +113,7 @@ func (b *BlockInfo) CreateWithdrawals(ctx context.Context, ws []*types.Withdrawa
 
 	res, err := stream.CloseAndRecv()
 	if err != nil {
-		return fmt.Errorf("failed to receive transaction stream response: %w", err)
+		return fmt.Errorf("failed to receive withdrawal stream response: %w", err)
 	}
 
 	if res.TotalCreated != totalSent {

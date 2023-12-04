@@ -56,6 +56,28 @@ func (s *Service) CreateTransaction(stream pb.BlockInfoService_CreateTransaction
 	}
 }
 
+func (s *Service) CreateWithdrawal(stream pb.BlockInfoService_CreateWithdrawalServer) error {
+	var total int32 = 0
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return stream.SendAndClose(&pb.CreateWithdrawalResponse{
+				TotalCreated: total,
+			})
+		}
+		if err != nil {
+			return fmt.Errorf("error while streaming ws: %w", err)
+		}
+
+		err = s.usecase.CreateWithdrawal(context.Background(), req.Withdrawal, req.BlockHash)
+		if err != nil {
+			return fmt.Errorf("failed to create withdrawal: %w", err)
+		}
+
+		total++
+	}
+}
+
 func (s *Service) GetHeaders(ctx context.Context, req *pb.GetHeadersRequest) (*pb.GetHeadersResponse, error) {
 	pagedHeaders, err := s.usecase.GetHeaders(ctx, int(req.Page), int(req.PageSize))
 	if err != nil {
@@ -96,6 +118,19 @@ func (s *Service) GetWsByBlockHash(ctx context.Context, req *pb.WsByBlockHashReq
 		Ws:         pagedWs.Data,
 		TotalPages: pagedWs.TotalPages,
 		Page:       pagedWs.Page,
+	}
+
+	return res, nil
+}
+
+func (s *Service) GetLastNBlocks(ctx context.Context, req *pb.GetLastNBlocksRequest) (*pb.GetLastNBlocksResponse, error) {
+	jsonBlocks, err := s.usecase.GetLastNBlocks(ctx, int(req.Count))
+	if err != nil {
+		return nil, err
+	}
+
+	res := &pb.GetLastNBlocksResponse{
+		Blocks: jsonBlocks,
 	}
 
 	return res, nil

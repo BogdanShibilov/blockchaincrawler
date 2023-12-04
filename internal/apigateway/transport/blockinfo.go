@@ -75,3 +75,16 @@ func (b *BlockInfo) GetWsByBlockHash(ctx context.Context, hash string, page int,
 
 	return res, nil
 }
+
+func (b *BlockInfo) GetLastNBlocks(ctx context.Context, count int) (*pb.GetLastNBlocksResponse, error) {
+	req := &pb.GetLastNBlocksRequest{
+		Count: int32(count),
+	}
+
+	res, err := b.client.GetLastNBlocks(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}

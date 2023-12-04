@@ -6,6 +6,7 @@ import (
 
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/database/postgres"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/blockinfo/entity"
+	"gorm.io/gorm"
 )
 
 type Block struct {
@@ -16,22 +17,22 @@ func NewBlock(db *postgres.Pg) *Block {
 	return &Block{db}
 }
 
-func (b *Block) CreateBlock(ctx context.Context, hash string) error {
-	newBlock := &entity.Block{
-		Hash: hash,
-	}
-	res := b.main.DB.WithContext(ctx).Create(newBlock)
-	if res.Error != nil {
-		return res.Error
-	}
-
-	return nil
-}
-
 func (b *Block) CreateHeader(ctx context.Context, header *entity.Header) error {
-	res := b.main.DB.WithContext(ctx).Create(header)
-	if res.Error != nil {
-		return res.Error
+	err := b.main.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		newBlock := &entity.Block{
+			Hash: header.BlockHash,
+		}
+		if err := tx.Create(&newBlock).Error; err != nil {
+			return err
+		}
+		if err := tx.Create(&header).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -104,4 +105,18 @@ func (b *Block) GetWsByBlockHash(ctx context.Context, hash string, page int, pag
 		TotalPages: int(math.Ceil(float64(totalRows) / float64(pageSize))),
 		Page:       page,
 	}, nil
+}
+
+func (b *Block) GetLastNBlocks(ctx context.Context, count int) (blocks []*entity.Block, err error) {
+	err = b.main.DB.WithContext(ctx).
+		Preload("Header").
+		Preload("Transactions").
+		Preload("Withdrawals").
+		Limit(count).
+		Find(&blocks).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return blocks, nil
 }

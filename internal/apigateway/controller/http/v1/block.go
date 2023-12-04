@@ -26,6 +26,7 @@ func NewBlockRoutes(handler *gin.RouterGroup, api apigateway.UseCase, l *zap.Sug
 		blockHandler.GET("/header", r.GetHeaders)
 		blockHandler.GET("/transaction/:blockhash", r.GetTxsByBlockHash)
 		blockHandler.GET("/withdrawal/:blockhash", r.GetWsByBlockHash)
+		blockHandler.GET("/recent", r.GetLastBlocks)
 	}
 }
 
@@ -103,6 +104,16 @@ func (r *BlockRoutes) GetWsByBlockHash(ctx *gin.Context) {
 	if err != nil {
 		r.l.Errorf("failed to get withdrawals from blockinfo: %v", err)
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, "failed to get withdrawals")
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dto)
+}
+
+func (r *BlockRoutes) GetLastBlocks(ctx *gin.Context) {
+	dto, err := r.api.GetLastNBlocks(ctx, 20)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, "failed to get most recent blocks")
 		return
 	}
 
