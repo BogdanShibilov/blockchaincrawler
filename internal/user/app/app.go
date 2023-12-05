@@ -12,6 +12,7 @@ import (
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/database/postgres"
 	v1 "github.com/bogdanshibilov/blockchaincrawler/internal/user/grpcserver/v1"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/repository"
+	"github.com/bogdanshibilov/blockchaincrawler/internal/user/seeder"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/user"
 )
 
@@ -50,6 +51,9 @@ func (a *App) Run() {
 
 	userRepo := repository.New(mainDb)
 	userUseCase := user.New(userRepo)
+
+	seeder := seeder.NewUserSeeder(mainDb)
+	seeder.Seed()
 
 	l.Infof("Starting server on port %v", cfg.Server.Port)
 	grpcService := v1.NewService(userUseCase, l)

@@ -7,7 +7,6 @@ import (
 )
 
 type BlockRepo interface {
-	// CreateBlock(ctx context.Context, hash string) error
 	CreateHeader(ctx context.Context, header *entity.Header) error
 	CreateTransaction(ctx context.Context, tx *entity.Transaction) error
 	CreateWithdrawal(ctx context.Context, w *entity.Withdrawal) error
