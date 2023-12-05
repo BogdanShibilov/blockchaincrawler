@@ -3,11 +3,12 @@ package seeder
 import (
 	"fmt"
 
-	"github.com/bogdanshibilov/blockchaincrawler/internal/user/database/postgres"
-	"github.com/bogdanshibilov/blockchaincrawler/internal/user/entity"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+
+	"github.com/bogdanshibilov/blockchaincrawler/internal/user/database/postgres"
+	"github.com/bogdanshibilov/blockchaincrawler/internal/user/entity"
 )
 
 type UserSeeder struct {
@@ -61,31 +62,31 @@ func getUsersData() []*entity.User {
 			IsConfirmed: true,
 		},
 		{
-			Role:        "John",
+			Role:        "user",
 			Email:       "John@gmail.com",
 			Password:    generateHash("123456abc"),
 			IsConfirmed: true,
 		},
 		{
-			Role:        "Eve",
+			Role:        "user",
 			Email:       "Eve@gmail.com",
 			Password:    generateHash("123456abc"),
 			IsConfirmed: false,
 		},
 		{
-			Role:        "Smithy",
+			Role:        "user",
 			Email:       "Smithy@gmail.com",
 			Password:    generateHash("123456abc"),
 			IsConfirmed: true,
 		},
 		{
-			Role:        "Alice",
+			Role:        "user",
 			Email:       "Alice@gmail.com",
 			Password:    generateHash("123456abc"),
 			IsConfirmed: true,
 		},
 		{
-			Role:        "Carl",
+			Role:        "user",
 			Email:       "Carl@gmail.com",
 			Password:    generateHash("123456abc"),
 			IsConfirmed: false,
