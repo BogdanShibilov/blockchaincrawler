@@ -528,9 +528,14 @@
         },
         "dto.ConfirmUserRequest": {
             "type": "object",
+            "required": [
+                "code"
+            ],
             "properties": {
                 "code": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 4,
+                    "minLength": 4
                 }
             }
         },
@@ -589,6 +594,10 @@
         },
         "dto.JwtToken": {
             "type": "object",
+            "required": [
+                "accessToken",
+                "refreshToken"
+            ],
             "properties": {
                 "accessToken": {
                     "type": "string"
@@ -612,6 +621,9 @@
         },
         "dto.RenewTokenRequest": {
             "type": "object",
+            "required": [
+                "refreshToken"
+            ],
             "properties": {
                 "refreshToken": {
                     "type": "string"
@@ -620,6 +632,9 @@
         },
         "dto.SendConfirmCodeRequest": {
             "type": "object",
+            "required": [
+                "email"
+            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -675,12 +690,17 @@
         },
         "dto.UserCreds": {
             "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
             "properties": {
                 "email": {
                     "type": "string"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 5
                 }
             }
         },

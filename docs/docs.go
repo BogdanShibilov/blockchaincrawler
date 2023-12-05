@@ -534,9 +534,14 @@ const docTemplate = `{
         },
         "dto.ConfirmUserRequest": {
             "type": "object",
+            "required": [
+                "code"
+            ],
             "properties": {
                 "code": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 4,
+                    "minLength": 4
                 }
             }
         },
@@ -595,6 +600,10 @@ const docTemplate = `{
         },
         "dto.JwtToken": {
             "type": "object",
+            "required": [
+                "accessToken",
+                "refreshToken"
+            ],
             "properties": {
                 "accessToken": {
                     "type": "string"
@@ -618,6 +627,9 @@ const docTemplate = `{
         },
         "dto.RenewTokenRequest": {
             "type": "object",
+            "required": [
+                "refreshToken"
+            ],
             "properties": {
                 "refreshToken": {
                     "type": "string"
@@ -626,6 +638,9 @@ const docTemplate = `{
         },
         "dto.SendConfirmCodeRequest": {
             "type": "object",
+            "required": [
+                "email"
+            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -681,12 +696,17 @@ const docTemplate = `{
         },
         "dto.UserCreds": {
             "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
             "properties": {
                 "email": {
                     "type": "string"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 5
                 }
             }
         },

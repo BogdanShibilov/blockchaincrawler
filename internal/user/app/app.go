@@ -14,6 +14,7 @@ import (
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/repository"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/seeder"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/user"
+	"github.com/bogdanshibilov/blockchaincrawler/pkg/redis"
 )
 
 type App struct {
@@ -49,8 +50,13 @@ func (a *App) Run() {
 		l.Info("main db was succesfully closed")
 	}()
 
+	cache, err := redis.New(redis.Address("localhost:6380"))
+	if err != nil {
+		l.Panicf("failed to create redis: %v", err)
+	}
+
 	userRepo := repository.New(mainDb)
-	userUseCase := user.New(userRepo)
+	userUseCase := user.New(userRepo, cache)
 
 	seeder := seeder.NewUserSeeder(mainDb)
 	seeder.Seed()

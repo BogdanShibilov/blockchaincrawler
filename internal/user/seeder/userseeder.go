@@ -27,7 +27,7 @@ func (s *UserSeeder) Seed() {
 	if len(u) == 0 {
 		data := getUsersData()
 		for _, u := range data {
-			s.createUser(u)
+			_, _ = s.createUser(u)
 		}
 	}
 }

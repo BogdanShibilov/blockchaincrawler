@@ -3,6 +3,7 @@ package v1
 import (
 	"net/http"
 
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	swaggerFiles "github.com/swaggo/files"
@@ -40,6 +41,7 @@ func NewRouter(api apigateway.UseCase, l *zap.SugaredLogger, cfg *config.Config)
 func (r *Router) Run(handler *gin.Engine) {
 	handler.GET("/healthz", func(ctx *gin.Context) { ctx.Status(http.StatusOK) })
 
+	pprof.Register(handler)
 	handler.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	h := handler.Group("/api/v1")

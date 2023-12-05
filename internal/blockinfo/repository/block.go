@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"math"
+	"time"
 
 	"gorm.io/gorm"
 
@@ -40,6 +41,10 @@ func (b *Block) CreateHeader(ctx context.Context, header *entity.Header) error {
 }
 
 func (b *Block) CreateTransaction(ctx context.Context, tx *entity.Transaction) error {
+	if err := b.main.DB.WithContext(ctx).First(&entity.Block{Hash: tx.BlockHash}).Error; err != nil {
+		time.Sleep(time.Millisecond * 500)
+	}
+
 	res := b.main.DB.WithContext(ctx).Create(tx)
 	if res.Error != nil {
 		return res.Error
@@ -49,6 +54,10 @@ func (b *Block) CreateTransaction(ctx context.Context, tx *entity.Transaction) e
 }
 
 func (b *Block) CreateWithdrawal(ctx context.Context, w *entity.Withdrawal) error {
+	if err := b.main.DB.WithContext(ctx).First(&entity.Block{Hash: w.BlockHash}).Error; err != nil {
+		time.Sleep(time.Millisecond * 500)
+	}
+
 	res := b.main.DB.WithContext(ctx).Create(w)
 	if res.Error != nil {
 		return res.Error

@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/spf13/viper"
 
 	"github.com/bogdanshibilov/blockchaincrawler/internal/apigateway/app"
@@ -24,7 +27,14 @@ func main() {
 		logger.Panicf("failed to load config error: %v", err)
 	}
 
-	app.New(logger.SugaredLogger, &cfg).Run()
+	go func() {
+		err := RunDebug()
+		if err != nil {
+			logger.Errorf("failed to create debug server: %v", err)
+		}
+	}()
+	app := app.New(logger.SugaredLogger, &cfg)
+	app.Run()
 }
 
 func loadConfig(path string) (config config.Config, err error) {
@@ -44,4 +54,14 @@ func loadConfig(path string) (config config.Config, err error) {
 		return config, fmt.Errorf("failed to Unmarshal config err: %w", err)
 	}
 	return config, nil
+}
+
+func RunDebug() error {
+	r := chi.NewRouter()
+	r.Mount("/debug", middleware.Profiler())
+	err := http.ListenAndServe(":8081", r)
+	if err != nil {
+		return err
+	}
+	return nil
 }

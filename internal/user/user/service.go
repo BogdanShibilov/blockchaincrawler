@@ -9,14 +9,19 @@ import (
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/entity"
 	"github.com/bogdanshibilov/blockchaincrawler/internal/user/repository"
 	pb "github.com/bogdanshibilov/blockchaincrawler/pkg/protobuf/user/gw"
+	"github.com/bogdanshibilov/blockchaincrawler/pkg/redis"
 )
 
 type Service struct {
-	repo repository.UserRepository
+	repo  repository.UserRepository
+	cache *redis.Redis
 }
 
-func New(repo repository.UserRepository) UseCase {
-	return &Service{repo}
+func New(repo repository.UserRepository, cache *redis.Redis) UseCase {
+	return &Service{
+		repo:  repo,
+		cache: cache,
+	}
 }
 
 func (s *Service) CreateUser(ctx context.Context, user *entity.User) (uuid.UUID, error) {
@@ -29,9 +34,20 @@ func (s *Service) CreateUser(ctx context.Context, user *entity.User) (uuid.UUID,
 }
 
 func (s *Service) GetUserByEmail(ctx context.Context, email string) (*entity.User, error) {
-	user, err := s.repo.GetUserByEmail(ctx, email)
+	user, err := s.getUserByEmailCached(ctx, email)
+	if user == nil {
+		user, err = s.repo.GetUserByEmail(ctx, email)
+		if err != nil {
+			return nil, fmt.Errorf("GetUserByEmail() error: %w", err)
+		}
+
+		err = s.setUserByEmailCache(ctx, email, user)
+		if err != nil {
+			return nil, err
+		}
+	}
 	if err != nil {
-		return nil, fmt.Errorf("GetUserByEmail() error: %w", err)
+		return nil, err
 	}
 
 	return user, nil
