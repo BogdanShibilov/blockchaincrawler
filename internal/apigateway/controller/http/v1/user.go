@@ -40,7 +40,7 @@ func NewUserRoutes(handler *gin.RouterGroup, api apigateway.UserUseCase, l *zap.
 // @Accept json
 // @Produce json
 // @Param profile body dto.UserProfileDto true "Your profile data"
-// @Param Authorization header string true "Bearer token"
+// @Security BearerAuth
 // @Success 200
 // @Failure 400
 // @Failure 401
@@ -72,7 +72,7 @@ func (u *UserRoutes) UpdateProfile(ctx *gin.Context) {
 // @Description Returns your profile data
 // @Tags user
 // @Produce json
-// @Param Authorization header string true "Bearer token"
+// @Security BearerAuth
 // @Success 200
 // @Failure 401
 // @Failure 403

@@ -20,6 +20,11 @@ const docTemplate = `{
     "paths": {
         "/admin/user": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns your all users' data. Admin only",
                 "produces": [
                     "application/json"
@@ -28,15 +33,6 @@ const docTemplate = `{
                     "admin"
                 ],
                 "summary": "Gets all users",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -55,6 +51,11 @@ const docTemplate = `{
         },
         "/admin/user/{id}": {
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Deletes user with given id",
                 "produces": [
                     "application/json"
@@ -63,15 +64,6 @@ const docTemplate = `{
                     "admin"
                 ],
                 "summary": "Delete user by id",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "204": {
                         "description": "No Content"
@@ -90,6 +82,11 @@ const docTemplate = `{
         },
         "/auth/confirmuser": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Tries to confirm user account with given code",
                 "consumes": [
                     "application/json"
@@ -110,13 +107,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.ConfirmUserRequest"
                         }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -137,6 +127,11 @@ const docTemplate = `{
         },
         "/auth/getconfirmation": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Sends code which can be used to confirm user account",
                 "consumes": [
                     "application/json"
@@ -157,13 +152,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.SendConfirmCodeRequest"
                         }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -423,6 +411,11 @@ const docTemplate = `{
         },
         "/user/profile": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns your profile data",
                 "produces": [
                     "application/json"
@@ -431,15 +424,6 @@ const docTemplate = `{
                     "user"
                 ],
                 "summary": "Gets your profile",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -456,6 +440,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Updates your profile with given profile data",
                 "consumes": [
                     "application/json"
@@ -476,13 +465,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.UserProfileDto"
                         }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -740,6 +722,13 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

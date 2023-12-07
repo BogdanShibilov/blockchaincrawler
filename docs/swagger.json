@@ -14,6 +14,11 @@
     "paths": {
         "/admin/user": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns your all users' data. Admin only",
                 "produces": [
                     "application/json"
@@ -22,15 +27,6 @@
                     "admin"
                 ],
                 "summary": "Gets all users",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -49,6 +45,11 @@
         },
         "/admin/user/{id}": {
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Deletes user with given id",
                 "produces": [
                     "application/json"
@@ -57,15 +58,6 @@
                     "admin"
                 ],
                 "summary": "Delete user by id",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "204": {
                         "description": "No Content"
@@ -84,6 +76,11 @@
         },
         "/auth/confirmuser": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Tries to confirm user account with given code",
                 "consumes": [
                     "application/json"
@@ -104,13 +101,6 @@
                         "schema": {
                             "$ref": "#/definitions/dto.ConfirmUserRequest"
                         }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -131,6 +121,11 @@
         },
         "/auth/getconfirmation": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Sends code which can be used to confirm user account",
                 "consumes": [
                     "application/json"
@@ -151,13 +146,6 @@
                         "schema": {
                             "$ref": "#/definitions/dto.SendConfirmCodeRequest"
                         }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -417,6 +405,11 @@
         },
         "/user/profile": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns your profile data",
                 "produces": [
                     "application/json"
@@ -425,15 +418,6 @@
                     "user"
                 ],
                 "summary": "Gets your profile",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -450,6 +434,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Updates your profile with given profile data",
                 "consumes": [
                     "application/json"
@@ -470,13 +459,6 @@
                         "schema": {
                             "$ref": "#/definitions/dto.UserProfileDto"
                         }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -734,6 +716,13 @@
                     "type": "integer"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

@@ -41,8 +41,17 @@ func (b *Block) CreateHeader(ctx context.Context, header *entity.Header) error {
 }
 
 func (b *Block) CreateTransaction(ctx context.Context, tx *entity.Transaction) error {
-	if err := b.main.DB.WithContext(ctx).First(&entity.Block{Hash: tx.BlockHash}).Error; err != nil {
-		time.Sleep(time.Millisecond * 500)
+	checkCount := 0
+	for {
+		if err := b.main.DB.WithContext(ctx).
+			First(&entity.Block{Hash: tx.BlockHash}).Error; err != nil {
+			time.Sleep(time.Millisecond * 500)
+		} else if checkCount > 10 {
+			return err
+		} else {
+			break
+		}
+		checkCount++
 	}
 
 	res := b.main.DB.WithContext(ctx).Create(tx)
@@ -54,8 +63,17 @@ func (b *Block) CreateTransaction(ctx context.Context, tx *entity.Transaction) e
 }
 
 func (b *Block) CreateWithdrawal(ctx context.Context, w *entity.Withdrawal) error {
-	if err := b.main.DB.WithContext(ctx).First(&entity.Block{Hash: w.BlockHash}).Error; err != nil {
-		time.Sleep(time.Millisecond * 500)
+	checkCount := 0
+	for {
+		if err := b.main.DB.WithContext(ctx).
+			First(&entity.Block{Hash: w.BlockHash}).Error; err != nil {
+			time.Sleep(time.Millisecond * 500)
+		} else if checkCount > 10 {
+			return err
+		} else {
+			break
+		}
+		checkCount++
 	}
 
 	res := b.main.DB.WithContext(ctx).Create(w)

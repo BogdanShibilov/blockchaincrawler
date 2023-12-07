@@ -167,12 +167,6 @@ paths:
   /admin/user:
     get:
       description: Returns your all users' data. Admin only
-      parameters:
-      - description: Bearer token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -184,18 +178,14 @@ paths:
           description: Forbidden
         "500":
           description: Internal Server Error
+      security:
+      - BearerAuth: []
       summary: Gets all users
       tags:
       - admin
   /admin/user/{id}:
     delete:
       description: Deletes user with given id
-      parameters:
-      - description: Bearer token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -207,6 +197,8 @@ paths:
           description: Forbidden
         "500":
           description: Internal Server Error
+      security:
+      - BearerAuth: []
       summary: Delete user by id
       tags:
       - admin
@@ -222,11 +214,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.ConfirmUserRequest'
-      - description: Bearer token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -238,6 +225,8 @@ paths:
           description: Unauthorized
         "403":
           description: Forbidden
+      security:
+      - BearerAuth: []
       summary: Confrims user account
       tags:
       - auth
@@ -253,11 +242,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.SendConfirmCodeRequest'
-      - description: Bearer token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -271,6 +255,8 @@ paths:
           description: Forbidden
         "500":
           description: Internal Server Error
+      security:
+      - BearerAuth: []
       summary: Sends code
       tags:
       - auth
@@ -431,12 +417,6 @@ paths:
   /user/profile:
     get:
       description: Returns your profile data
-      parameters:
-      - description: Bearer token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -448,6 +428,8 @@ paths:
           description: Forbidden
         "500":
           description: Internal Server Error
+      security:
+      - BearerAuth: []
       summary: Gets your profile
       tags:
       - user
@@ -462,11 +444,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.UserProfileDto'
-      - description: Bearer token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -480,7 +457,14 @@ paths:
           description: Forbidden
         "500":
           description: Internal Server Error
+      security:
+      - BearerAuth: []
       summary: Updates profile
       tags:
       - user
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

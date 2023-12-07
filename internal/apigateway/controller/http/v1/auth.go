@@ -133,7 +133,7 @@ func (r *AuthRoutes) CreateUser(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param email body dto.SendConfirmCodeRequest true "Email where code would be sent"
-// @Param Authorization header string true "Bearer token"
+// @Security BearerAuth
 // @Success 200
 // @Failure 400
 // @Failure 401
@@ -166,7 +166,7 @@ func (r *AuthRoutes) SendConfirmationCode(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param code body dto.ConfirmUserRequest true "Code used to confirm user"
-// @Param Authorization header string true "Bearer token"
+// @Security BearerAuth
 // @Success 200
 // @Failure 400
 // @Failure 401

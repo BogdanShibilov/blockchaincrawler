@@ -38,7 +38,7 @@ func NewAdminRoutes(handler *gin.RouterGroup, api apigateway.UseCase, l *zap.Sug
 // @Description Returns your all users' data. Admin only
 // @Tags admin
 // @Produce json
-// @Param Authorization header string true "Bearer token"
+// @Security BearerAuth
 // @Success 200
 // @Failure 401
 // @Failure 403
@@ -60,7 +60,7 @@ func (r *AdminRoutes) GetAllUsers(ctx *gin.Context) {
 // @Description Deletes user with given id
 // @Tags admin
 // @Produce json
-// @Param Authorization header string true "Bearer token"
+// @Security BearerAuth
 // @Success 204
 // @Failure 401
 // @Failure 403

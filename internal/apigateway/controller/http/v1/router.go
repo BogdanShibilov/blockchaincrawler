@@ -38,6 +38,10 @@ func NewRouter(api apigateway.UseCase, l *zap.SugaredLogger, cfg *config.Config)
 // @contact.email bogdanshibilov@gmail.com
 // @host localhost:8080
 // @BasePath /api/v1
+// @securityDefinitions.apikey	BearerAuth
+// @type apiKey
+// @name Authorization
+// @in header
 func (r *Router) Run(handler *gin.Engine) {
 	handler.GET("/healthz", func(ctx *gin.Context) { ctx.Status(http.StatusOK) })
 
