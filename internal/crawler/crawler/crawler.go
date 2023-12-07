@@ -13,6 +13,7 @@ type Crawler interface {
 	Close()
 	Headers() <-chan *types.Header
 	Blocks() <-chan *types.Block
-	Errors() <-chan error
+	Errors() chan error
 	Sub() (ethereum.Subscription, error)
+	Unsub()
 }

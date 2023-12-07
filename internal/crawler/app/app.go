@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 
 	"github.com/bogdanshibilov/blockchaincrawler/internal/crawler/config"
@@ -39,7 +40,7 @@ func (a *App) Run() {
 	}
 	defer c.Close()
 
-	crawlerService := crawler.NewService(c, a.l, blockInfoTransport)
+	crawlerService := crawler.NewService(c, a.l, blockInfoTransport, &sync.WaitGroup{})
 	a.l.Infof("Starting crawler")
 	go crawlerService.Run(ctx)
 

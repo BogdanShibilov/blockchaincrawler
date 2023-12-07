@@ -33,10 +33,13 @@ func (c *gethCrawler) Close() {
 	close(c.headers)
 	close(c.blocks)
 	close(c.errors)
+	log.Println("Closed channels succusfully")
+}
+
+func (c *gethCrawler) Unsub() {
 	if c.client.Client().SupportsSubscriptions() {
 		c.sub.Unsubscribe()
 	}
-	log.Println("Closed channels succusfully")
 }
 
 func (c *gethCrawler) Headers() <-chan *types.Header {
@@ -47,7 +50,7 @@ func (c *gethCrawler) Blocks() <-chan *types.Block {
 	return c.blocks
 }
 
-func (c *gethCrawler) Errors() <-chan error {
+func (c *gethCrawler) Errors() chan error {
 	return c.errors
 }
 
