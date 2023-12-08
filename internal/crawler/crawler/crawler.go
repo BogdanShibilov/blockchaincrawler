@@ -16,4 +16,5 @@ type Crawler interface {
 	Errors() chan error
 	Sub() (ethereum.Subscription, error)
 	Unsub()
+	RetryConnection()
 }

@@ -60,3 +60,17 @@ func (c *gethCrawler) Sub() (ethereum.Subscription, error) {
 	}
 	return c.sub, nil
 }
+
+func (c *gethCrawler) RetryConnection() {
+	client, err := c.conn.Dial()
+	if err != nil {
+		c.errors <- err
+	}
+
+	sub, err := client.SubscribeNewHead(context.Background(), c.headers)
+	if err != nil {
+		c.errors <- err
+	}
+
+	c.sub = sub
+}

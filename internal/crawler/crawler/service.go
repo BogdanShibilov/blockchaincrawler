@@ -44,6 +44,7 @@ func (s *Service) Run(ctx context.Context) {
 			s.l.Errorf("error from channel: %v", err)
 		case err := <-sub.Err():
 			s.l.Errorf("error from subscription: %v", err)
+			go s.crawler.RetryConnection()
 		case <-ctx.Done():
 			s.crawler.Unsub()
 			s.wg.Wait()
