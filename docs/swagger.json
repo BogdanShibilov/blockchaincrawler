@@ -58,6 +58,15 @@
                     "admin"
                 ],
                 "summary": "Delete user by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id of user who would be deleted",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "No Content"

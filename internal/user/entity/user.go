@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type Role string
@@ -33,4 +34,12 @@ type Profile struct {
 
 func (p *Profile) FullName() string {
 	return p.Name + p.Surname
+}
+
+func (u *User) BeforeDelete(tx *gorm.DB) (err error) {
+	err = tx.Where("user_id = ?", u.ID).Delete(&Profile{}).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -61,6 +61,7 @@ func (r *AdminRoutes) GetAllUsers(ctx *gin.Context) {
 // @Tags admin
 // @Produce json
 // @Security BearerAuth
+// @Param id path string true "id of user who would be deleted"
 // @Success 204
 // @Failure 401
 // @Failure 403

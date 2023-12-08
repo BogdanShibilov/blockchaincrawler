@@ -186,6 +186,12 @@ paths:
   /admin/user/{id}:
     delete:
       description: Deletes user with given id
+      parameters:
+      - description: id of user who would be deleted
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:

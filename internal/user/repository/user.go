@@ -76,9 +76,9 @@ func (u *User) UpdateUserById(ctx context.Context, newUser *entity.User) error {
 }
 
 func (u *User) DeleteUserById(ctx context.Context, id uuid.UUID) error {
-	res := u.main.WithContext(ctx).Delete(&entity.User{}, id)
-	if res.Error != nil {
-		return fmt.Errorf("failed to delete user by id: %w", res.Error)
+	err := u.main.WithContext(ctx).Delete(&entity.User{ID: id}, id).Error
+	if err != nil {
+		return fmt.Errorf("failed to delete user by id: %w", err)
 	}
 
 	return nil

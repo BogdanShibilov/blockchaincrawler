@@ -77,6 +77,8 @@ func (s *Service) GetAllUsers(ctx context.Context) ([]*entity.User, error) {
 }
 
 func (s *Service) DeleteUserById(ctx context.Context, id uuid.UUID) error {
+	user, _ := s.repo.GetUserById(ctx, id)
+	s.cache.Del(ctx, user.Email)
 	err := s.repo.DeleteUserById(ctx, id)
 	if err != nil {
 		return fmt.Errorf("DeleteUserById() error: %w", err)

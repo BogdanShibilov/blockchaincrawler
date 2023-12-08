@@ -27,10 +27,10 @@ func NewBlockRoutes(handler *gin.RouterGroup,
 
 	blockHandler := handler.Group("/block")
 	{
+		blockHandler.GET("/recent", r.GetLastBlocks)
 		blockHandler.GET("/header", r.GetHeaders)
 		blockHandler.GET("/transaction/:blockhash", r.GetTxsByBlockHash)
 		blockHandler.GET("/withdrawal/:blockhash", r.GetWsByBlockHash)
-		blockHandler.GET("/recent", r.GetLastBlocks)
 	}
 }
 
