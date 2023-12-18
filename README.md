@@ -6,6 +6,7 @@ Blockchain crawler - subscribes for blocks and sents them to the database once r
 * Gin
 * gRPC
 * PosgreSQL
+* Gorm
 * Redis
 * Kafka
 * Docker
